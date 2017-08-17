@@ -1,15 +1,17 @@
-/*
- * AUTHOR:         TONY.
- * CREATEDATE:     August 03st 2017.
- * DESCRIPTION:    js工具类
- *[Change Log]
- *
+/**
+ * @AUTHOR:                     David Chow
+ * @CREATEDATE:                 August 03st 2017.
+ * @NAME:                       tools 1.0.0
+ * @DESCRIPTION:                常用js工具类
+ * @BLOG:                       http://blog.csdn.net/baidu_25382371/article/details/77053972
+ * @License:                    You may use tools-js under the terms of the MIT License (SeeLICENSE).
+ * -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
  *[Import Of]
- *                 此处省略。。。
+ *
  *[Depend On]
  * JQuery v1.11.0+
  *[Sample Code]
- //复制此方法放在需要调用的地方(详情请看 tools.js    by mark tony)
+ //复制此方法放在需要调用的地方(详情请看 tools.js    by mark david Chow)
  tools.Formatting.方法名(参数);
  */
 
@@ -17,7 +19,7 @@ if (jQuery) {
     //tools.js
     var tools = {
         //版本
-        tools: 'v0.0.1',
+        tools: 'v1.0.0',
 
         //格式化基类
         Formatting: {},
@@ -201,6 +203,35 @@ if (jQuery) {
         if (r != null)
             return unescape(r[2]);
         return null;
+    }
+
+    //创建表单提交(请求地址,参数)
+    tools.Brower.Submit = function (action, object) {
+        var form = document.createElement("form");
+        //创建表单
+        form.name = "_tools.Brower.Submit_";
+        form.id = tools.Formatting.Format("_Submit_{0}", new Date().getTime());
+        form.style = "display:none";
+        form.method = "post"
+        form.target = "_blank";
+        form.action = action;
+
+        //创建参数
+        $.each(object, function (k, v) {
+            input = document.createElement("input");
+            input.name = k;
+            input.value = v;
+            input.type = "hidden";
+            form.appendChild(input);
+        })
+        //校验是否火狐
+        if (tools.Brower.basic.mozilla) {
+            /*   Firefox的一种安全策略
+             火狐浏览器中只有当页面中存在form时，submit(); 方法才会被激活
+             */
+            document.body.appendChild(form);
+        }
+        form.submit();
     }
 
 
