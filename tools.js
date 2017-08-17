@@ -1,5 +1,5 @@
 /*
- * AUTHOR:         David Chow.
+ * AUTHOR:         TONY.
  * CREATEDATE:     August 03st 2017.
  * DESCRIPTION:    js工具类
  *[Change Log]
@@ -9,13 +9,16 @@
  *[Depend On]
  * JQuery v1.11.0+
  *[Sample Code]
- //复制此方法放在需要调用的地方(详情请看 tools.js    by mark David Chow)
+ //复制此方法放在需要调用的地方(详情请看 tools.js    by mark tony)
  tools.Formatting.方法名(参数);
  */
 
 if (jQuery) {
     //tools.js
     var tools = {
+        //版本
+        tools: 'v0.0.1',
+
         //格式化基类
         Formatting: {},
 
@@ -29,6 +32,22 @@ if (jQuery) {
         Brower: {}
     };
 
+    //格式化字符串，类似于 .NET 中的 string.Format 函数功能
+    tools.Formatting.Format = function () {
+        str = tools.Checkout.IsNullOrEmpty(arguments[0]) ? "" : String(arguments[0]);
+        if ($.isArray(arguments[1])) {
+            for (var i = 0; i < arguments[1].length; i++) {
+                value = arguments[1][i] ? arguments[1][i] : "";
+                str = str.replace(new RegExp("\\{" + i + "}", "gm"), value);
+            }
+        } else {
+            var data = $(arguments).slice(1, arguments.length);
+            for (var i = 0; i < data.length; i++) {
+                str = str.replace(new RegExp("\\{" + i + "}", "gm"), data[i]);
+            }
+        }
+        return str;
+    };
 
     //银行卡(卡号,格式字符,分割数)
     tools.Formatting.BackCardNo = function (cardno, replacing, index) {
