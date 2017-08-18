@@ -232,13 +232,8 @@ if (jQuery) {
             form.appendChild(input);
         })
 
-        //校验是否火狐
-        if (tools.Brower.basic.mozilla) {
-            /*   Firefox的一种安全策略
-             火狐浏览器中只有当页面中存在form时，submit(); 方法才会被激活
-             */
-            document.body.appendChild(form);
-        }
+         //最新的HTML规范只有当页面中存在form时，submit(); 方法才会被激活
+         document.body.appendChild(form);
         form.submit();
     }
 
