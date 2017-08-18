@@ -207,13 +207,20 @@ if (jQuery) {
 
     //创建表单提交(请求地址,参数)
     tools.Brower.Submit = function (action, object) {
-        var form = document.createElement("form");
-        //创建表单
-        form.name = "_tools.Brower.Submit_";
+        var form = document.forms["_tools.Brower.Submit_"];
+        //这样处理可以减少form冗余
+        if (form) {
+            form.innerHTML = "";
+        } else {
+            //创建表单
+            form = document.createElement("form");
+            form.name = "_tools.Brower.Submit_";
+            form.style = "display:none";
+            form.method = "post"
+            form.target = "_blank";
+        }
+
         form.id = tools.Formatting.Format("_Submit_{0}", new Date().getTime());
-        form.style = "display:none";
-        form.method = "post"
-        form.target = "_blank";
         form.action = action;
 
         //创建参数
@@ -224,6 +231,7 @@ if (jQuery) {
             input.type = "hidden";
             form.appendChild(input);
         })
+
         //校验是否火狐
         if (tools.Brower.basic.mozilla) {
             /*   Firefox的一种安全策略
