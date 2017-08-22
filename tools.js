@@ -15,8 +15,6 @@
  tools.Formatting.方法名(参数);
  */
 (function (window, $, undefined) {
-    if (!$) { throw new ReferenceError("tools.js Depend On JQuery !"); return false }
-
     //tools.js
     window.tools = {
         //版本
@@ -238,4 +236,13 @@
     }
 
 
-})(window, jQuery)
+})(window, (function () {
+    try {
+        if (!jQuery)
+            return undefined;
+        else
+            return jQuery;
+    } catch (e) {
+        throw new ReferenceError("tools.js Depend On JQuery !");
+    }
+})())
