@@ -14,10 +14,11 @@
  //复制此方法放在需要调用的地方(详情请看 tools.js    by mark david Chow)
  tools.Formatting.方法名(参数);
  */
+(function (window, $, undefined) {
+    if (!$) { throw new ReferenceError("tools.js Depend On JQuery !"); return false }
 
-if (jQuery) {
     //tools.js
-    var tools = {
+    window.tools = {
         //版本
         tools: 'v1.0.0',
 
@@ -32,23 +33,6 @@ if (jQuery) {
 
         //浏览器基类
         Brower: {}
-    };
-
-    //格式化字符串，类似于 .NET 中的 string.Format 函数功能
-    tools.Formatting.Format = function () {
-        str = tools.Checkout.IsNullOrEmpty(arguments[0]) ? "" : String(arguments[0]);
-        if ($.isArray(arguments[1])) {
-            for (var i = 0; i < arguments[1].length; i++) {
-                value = arguments[1][i] ? arguments[1][i] : "";
-                str = str.replace(new RegExp("\\{" + i + "}", "gm"), value);
-            }
-        } else {
-            var data = $(arguments).slice(1, arguments.length);
-            for (var i = 0; i < data.length; i++) {
-                str = str.replace(new RegExp("\\{" + i + "}", "gm"), data[i]);
-            }
-        }
-        return str;
     };
 
     //银行卡(卡号,格式字符,分割数)
@@ -175,6 +159,22 @@ if (jQuery) {
         return r;
     }
 
+    //格式化字符串，类似于 .NET 中的 string.Format 函数功能
+    tools.String.Format = function () {
+        str = tools.Checkout.IsNullOrEmpty(arguments[0]) ? "" : String(arguments[0]);
+        if ($.isArray(arguments[1])) {
+            for (var i = 0; i < arguments[1].length; i++) {
+                value = arguments[1][i] ? arguments[1][i] : "";
+                str = str.replace(new RegExp("\\{" + i + "}", "gm"), value);
+            }
+        } else {
+            var data = $(arguments).slice(1, arguments.length);
+            for (var i = 0; i < data.length; i++) {
+                str = str.replace(new RegExp("\\{" + i + "}", "gm"), data[i]);
+            }
+        }
+        return str;
+    }
 
     //  获取浏览器的名称以及版本号。
     //  判断浏览器版本示例：判断浏览器是否为IE：  coreUtil.browser.msie == true，判断浏览器是否为 Chrome：window.browser.chrome == true
@@ -220,7 +220,7 @@ if (jQuery) {
             form.target = "_blank";
         }
 
-        form.id = tools.Formatting.Format("_Submit_{0}", new Date().getTime());
+        form.id = tools.String.Format("_Submit_{0}", new Date().getTime());
         form.action = action;
 
         //创建参数
@@ -232,12 +232,10 @@ if (jQuery) {
             form.appendChild(input);
         })
 
-         //最新的HTML规范只有当页面中存在form时，submit(); 方法才会被激活
-         document.body.appendChild(form);
+        //最新的HTML规范只有当页面中存在form时，submit(); 方法才会被激活
+        document.body.appendChild(form);
         form.submit();
     }
 
 
-} else {
-    throw new ReferenceError("tools.js Depend On JQuery !")
-}
+})(window, jQuery)
