@@ -12,7 +12,7 @@
  * JQuery v1.11.0+
  *[Sample Code]
  //复制此方法放在需要调用的地方(详情请看 tools.js    by mark david Chow)
- tools.Formatting.方法名(参数);
+
  */
 (function (window, $, undefined) {
     //tools.js
@@ -33,7 +33,17 @@
         Brower: {}
     };
 
-    //银行卡(卡号,格式字符,分割数)
+    /**
+     *  格式化银行卡
+     *  @cardno  卡号
+     *  @replacing   格式字符
+     *  @index  分割数
+     *  @return  字符串
+     *  @samplecode
+     *    1.tools.Formatting.BackCardNo('17072615244558938683') return '1707 2615 2445 5893 8683'
+     *    2.tools.Formatting.BackCardNo('17072615244558938683','-') return '1707-2615-2445-5893-8683'
+     *    3.tools.Formatting.BackCardNo('17072615244558938683',',',3) return '170,726,152,445,589,386,83'
+     **/
     tools.Formatting.BackCardNo = function (cardno, replacing, index) {
         var i = 4,
             r = " ";
@@ -48,6 +58,17 @@
     }
 
     //Json日期(日期,格式字符,时间显示)
+    /**
+     *   格式化Json日期
+     *   @date  json日期
+     *   @replacing   格式字符
+     *   @showtime  是否显示时间
+     *   @return 正确的日期
+     *   @samplecode
+     *     1.tools.Formatting.JsonDateTime("/Date(1405056837780)/") return 2014-07-11 13:33:57
+     *     2.tools.Formatting.JsonDateTime("/Date(1405056837780)/","/") return 2014/07/11 13:33:57
+     *     3.tools.Formatting.JsonDateTime("/Date(1405056837780)/","/",false) return 2014/07/11
+     */
     tools.Formatting.JsonDateTime = function (date, replacing, showtime) {
         var r = "-",
             s = true;
@@ -157,7 +178,12 @@
         return r;
     }
 
-    //格式化字符串，类似于 .NET 中的 string.Format 函数功能
+    /**
+     *   类似于 .NET 中的 string.Format 函数功能
+     *   @teturn 字符串
+     *   @samplecode
+     *   tools.String.Format("{0},Hello World ！","小明")
+     **/
     tools.String.Format = function () {
         str = tools.Checkout.IsNullOrEmpty(arguments[0]) ? "" : String(arguments[0]);
         if ($.isArray(arguments[1])) {
@@ -194,7 +220,13 @@
 
     tools.Brower.basic = _browser;
 
-    //当前网页链接指定的key值
+    /**
+     *  获取当前网页参数
+     *  @key 取值参数
+     *  @return 值
+     *  @samplecode
+     *    tools.Brower.Request("key")
+     */
     tools.Brower.Request = function (key) {
         var regexp = new RegExp("(^|&)" + key + "=([^&]*)(&|$)", "i");
         var r = window.location.search.substr(1).match(regexp);
@@ -203,10 +235,19 @@
         return null;
     }
 
-    //创建表单提交(请求地址,参数)
+    /**
+     *  创建<form>表单提交
+     *  @action  请求地址
+     *  @object  对象参数
+     *  @return  <form>标签对象
+     *  @samplecode
+     *  tools.Brower.Submit("/Controller/Action",{
+	 *      Name:'小明',Age:18,Sex:1
+     *  });
+     **/
     tools.Brower.Submit = function (action, object) {
         var form = document.forms["_tools.Brower.Submit_"];
-        //这样处理可以减少form冗余
+        //这样处理可以减少<form>冗余
         if (form) {
             form.innerHTML = "";
         } else {
