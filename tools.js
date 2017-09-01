@@ -18,7 +18,7 @@
     //tools.js
     window.tools = {
         //版本
-        tools: 'v1.0.0',
+        tools: 'v1.1.0',
 
         //格式化基类
         Formatting: {},
@@ -108,6 +108,53 @@
         return null;
     }
 
+    //阿拉伯数字转为中文大写
+    tools.Formatting.Chinese = function (arabnum) {
+        if (!/^\d*(\.\d*)?$/.test(arabnum)) { alert("Number is wrong!"); return "Number is wrong!"; }
+        var A = new Array("零", "壹", "贰", "叁", "肆", "伍", "陆", "柒", "捌", "玖");
+        var B = new Array("", "拾", "佰", "仟", "万", "億", "点", "");
+        var a = ("" + arabnum).replace(/(^0*)/g, "").split("."), k = 0, re = "";
+        for (var i = a[0].length - 1; i >= 0; i--) {
+            switch (k) {
+                case 0: re = B[7] + re; break;
+                case 4: if (!new RegExp("0{4}\\d{" + (a[0].length - i - 1) + "}$").test(a[0]))
+                    re = B[4] + re; break;
+                case 8: re = B[5] + re; B[7] = B[5]; k = 0; break;
+            }
+            if (k % 4 == 2 && a[0].charAt(i + 2) != 0 && a[0].charAt(i + 1) == 0) re = A[0] + re;
+            if (a[0].charAt(i) != 0) re = A[a[0].charAt(i)] + B[k % 4] + re; k++;
+        }
+
+        if (a.length > 1) //加上小数部分(如果有小数部分)
+        {
+            re += B[6];
+            for (var i = 0; i < a[1].length; i++) re += A[a[1].charAt(i)];
+        }
+        return re;
+    },
+
+        //阿拉伯数字金额转为中文大写金额,精度到分
+        tools.Formatting.ChineseAmt = function (arabnum) {
+            if (!/^\d*(\.\d*)?$/.test(arabnum)) return ""; //{ alert("Number is wrong!"); return "Number is wrong!"; }
+            arabnum = parseFloat(arabnum).toFixed(2);
+            var cnNum = tools.Formatting.Chinese(arabnum);
+            var a = cnNum.split("点");
+            var ret = "";
+            ret += (a[0] + "圆");
+            if (a.length > 1) {
+                for (var i = 0; i < a[1].length; i++) {
+                    ret += a[1][i];
+                    if (i == 0) ret += "角";
+                    else if (i == 1) ret += "分";
+                }
+            }
+            else {
+                ret += "整";
+            }
+
+            return ret;
+        }
+
     //去除首尾中间空白字符(参数,中间空格)
     tools.Formatting.TrimAll = function (value, center) {
         var c = true,
@@ -120,6 +167,10 @@
         return value;
 
     }
+
+
+
+
 
     //判断传入的字符串是否为Null或者为空字符串。
     tools.Checkout.IsNullOrEmpty = function (value) {
@@ -166,6 +217,10 @@
         return false;
     }
 
+
+
+
+
     //去重
     tools.String.Distinct = function (value) {
         var r = [], hash = {};
@@ -199,6 +254,14 @@
         }
         return str;
     }
+
+    //创建GUID唯一标识
+    tools.String.NewGuid = function () {
+        function S4() {
+            return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
+        }
+        return (S4() + S4() + S4() + S4() + S4() + S4() + S4() + S4());
+    };
 
     //  获取浏览器的名称以及版本号。
     //  判断浏览器版本示例：判断浏览器是否为IE：  coreUtil.browser.msie == true，判断浏览器是否为 Chrome：window.browser.chrome == true
@@ -276,6 +339,28 @@
         form.submit();
     }
 
+    /**设置缓存
+     * @key 键
+     * @value 值（只支持字符串）
+     */
+    tools.Brower.SetCache = function (key, value) {
+        localStorage.setItem(key, value);
+    };
+    /**获取缓存
+     * @key 键
+     * @return 字符串
+     */
+    tools.Brower.GetCache = function (key) {
+        return localStorage.getItem(key);
+    };
+    //删除指定缓存数据
+    tools.Brower.RemoveCache = function (key) {
+        localStorage.removeItem(key);
+    };
+    //清除缓存
+    tools.Brower.ClearCache = function () {
+        localStorage.clear();
+    };
 
 })(window, (function () {
     try {
