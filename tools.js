@@ -207,7 +207,7 @@
     };
 
     //是否存在
-    function IsExistsfunction(s) {
+    function IsExists(s) {
         var hash = {};
         for (var i in s) {
             if (hash[s[i]])
