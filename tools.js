@@ -363,16 +363,20 @@
         localStorage.clear();
     };
 
-    //初始化话
+    //初始化
     function _InitTools() {
         $.each(tools.method, function (k, v) {
             tools[k] = {};
             v.forEach(function (f, e) {
                 tools[k][f] = function () {
-                    return eval(f).apply(tools[k][f], arguments);
+                    return call(this, f, arguments);
+                    //return eval(f).apply(tools[k][f], arguments);
                 };
             })
         })
+        function call(that, fn, arguments) {
+            return eval(fn).apply(that, arguments);
+        }
         window.tools = tools;
     }
 
