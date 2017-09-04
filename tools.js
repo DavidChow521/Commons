@@ -16,21 +16,21 @@
  */
 (function (window, $, undefined) {
     //tools.js
-    window.tools = {
+    var tools = {
         //版本
         tools: 'v1.1.0',
 
-        //格式化基类
-        Formatting: {},
+        method: {
+            //格式化基类
+            Formatting: ["BackCardNo", "JsonDateTime", "MoneyRoundOff", "Chinese", "ChineseAmt", "TrimAll"],
+            //校验基类
+            Checkout: ["IsNullOrEmpty", "IsNullOrWhiteSpace", "IsNullOrWhiteSpace", "IsEmail", "IsZipCode", "IsChinese", "IsEnglish", "IsExists"],
+            //字符串基类
+            String: ["Distinct", "Format", "NewGuid"],
+            //浏览器基类
+            Brower: ["basic", "Request", "Submit", "SetCache", "GetCache", "RemoveCache", "ClearCache"]
+        }
 
-        //校验基类
-        Checkout: {},
-
-        //字符串基类
-        String: {},
-
-        //浏览器基类
-        Brower: {}
     };
 
     /**
@@ -44,10 +44,10 @@
      *    2.tools.Formatting.BackCardNo('17072615244558938683','-') return '1707-2615-2445-5893-8683'
      *    3.tools.Formatting.BackCardNo('17072615244558938683',',',3) return '170,726,152,445,589,386,83'
      **/
-    tools.Formatting.BackCardNo = function (cardno, replacing, index) {
+    function BackCardNo(cardno, replacing, index) {
         var i = 4,
             r = " ";
-        if (!tools.Checkout.IsNullOrEmpty(index)) {
+        if (!IsNullOrEmpty(index)) {
             if ($.isNumeric(index))
                 i = index;
         }
@@ -69,7 +69,7 @@
      *     2.tools.Formatting.JsonDateTime("/Date(1405056837780)/","/") return 2014/07/11 13:33:57
      *     3.tools.Formatting.JsonDateTime("/Date(1405056837780)/","/",false) return 2014/07/11
      */
-    tools.Formatting.JsonDateTime = function (date, replacing, showtime) {
+    function JsonDateTime(date, replacing, showtime) {
         var r = "-",
             s = true;
         if (typeof (replacing) !== undefined && $.trim(replacing) !== "")
@@ -93,7 +93,7 @@
     }
 
     //金额四舍五入(数额,保留位数,币种符号)
-    tools.Formatting.MoneyRoundOff = function (money, index, currency) {
+    function MoneyRoundOff(money, index, currency) {
         var i = 2;
         if (!tools.Checkout.IsNullOrEmpty(index)) {
             if ($.isNumeric(index))
@@ -106,10 +106,10 @@
             return (parseFloat(money)).toFixed(i);
         }
         return null;
-    }
+    };
 
     //阿拉伯数字转为中文大写
-    tools.Formatting.Chinese = function (arabnum) {
+    function Chinese(arabnum) {
         if (!/^\d*(\.\d*)?$/.test(arabnum)) { alert("Number is wrong!"); return "Number is wrong!"; }
         var A = new Array("零", "壹", "贰", "叁", "肆", "伍", "陆", "柒", "捌", "玖");
         var B = new Array("", "拾", "佰", "仟", "万", "億", "点", "");
@@ -131,32 +131,32 @@
             for (var i = 0; i < a[1].length; i++) re += A[a[1].charAt(i)];
         }
         return re;
-    },
+    };
 
-        //阿拉伯数字金额转为中文大写金额,精度到分
-        tools.Formatting.ChineseAmt = function (arabnum) {
-            if (!/^\d*(\.\d*)?$/.test(arabnum)) return ""; //{ alert("Number is wrong!"); return "Number is wrong!"; }
-            arabnum = parseFloat(arabnum).toFixed(2);
-            var cnNum = tools.Formatting.Chinese(arabnum);
-            var a = cnNum.split("点");
-            var ret = "";
-            ret += (a[0] + "圆");
-            if (a.length > 1) {
-                for (var i = 0; i < a[1].length; i++) {
-                    ret += a[1][i];
-                    if (i == 0) ret += "角";
-                    else if (i == 1) ret += "分";
-                }
+    //阿拉伯数字金额转为中文大写金额,精度到分
+    function ChineseAmt(arabnum) {
+        if (!/^\d*(\.\d*)?$/.test(arabnum)) return ""; //{ alert("Number is wrong!"); return "Number is wrong!"; }
+        arabnum = parseFloat(arabnum).toFixed(2);
+        var cnNum = tools.Formatting.Chinese(arabnum);
+        var a = cnNum.split("点");
+        var ret = "";
+        ret += (a[0] + "圆");
+        if (a.length > 1) {
+            for (var i = 0; i < a[1].length; i++) {
+                ret += a[1][i];
+                if (i == 0) ret += "角";
+                else if (i == 1) ret += "分";
             }
-            else {
-                ret += "整";
-            }
-
-            return ret;
+        }
+        else {
+            ret += "整";
         }
 
+        return ret;
+    }
+
     //去除首尾中间空白字符(参数,中间空格)
-    tools.Formatting.TrimAll = function (value, center) {
+    function TrimAll(value, center) {
         var c = true,
             value = $.trim(value);
         if (!tools.Checkout.IsNullOrEmpty(center))
@@ -173,41 +173,41 @@
 
 
     //判断传入的字符串是否为Null或者为空字符串。
-    tools.Checkout.IsNullOrEmpty = function (value) {
+    function IsNullOrEmpty(value) {
         return value === undefined || value === null || value === "";
     };
 
     //判断传入的字符串是否为Null或者为空字符串或者全是空格。
-    tools.Checkout.IsNullOrWhiteSpace = function (value) {
-        return tools.Checkout.isNullOrEmpty(value) || $.trim(String(value)) === "";
+    function IsNullOrWhiteSpace(value) {
+        return IsNullOrEmpty(value) || $.trim(String(value)) === "";
     };
 
     //判断当前value是否是正确的 电子邮箱地址(Email) 格式。
-    tools.Checkout.IsEmail = function (value) {
+    function IsEmail(value) {
         str = tools.Checkout.isNullOrEmpty(value) ? "" : String(value);
         return /^((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?$/i.test(value);
     };
 
     //判断当前value是否是正确的 邮政编码(中国) 格式。
-    tools.Checkout.IsZipCode = function (value) {
+    function IsZipCode(value) {
         str = tools.Checkout.isNullOrEmpty(value) ? "" : String(value);
         return /^[\d]{6}$/.test(value);
     };
 
     //验证中文
-    tools.Checkout.IsChinese = function (value) {
+    function IsChinese(value) {
         str = tools.Checkout.IsNullOrEmpty(value) ? "" : String(value);
         return /^[\u0391-\uFFE5]+$/i.test(value);
     };
 
     //验证英文
-    tools.Checkout.IsEnglish = function (value) {
+    function IsEnglish(value) {
         str = tools.Checkout.IsNullOrEmpty(value) ? "" : String(value);
         return /^[A-Za-z]+$/i.test(value);
     };
 
     //是否存在
-    tools.Checkout.IsExists = function (s) {
+    function IsExistsfunction(s) {
         var hash = {};
         for (var i in s) {
             if (hash[s[i]])
@@ -222,7 +222,7 @@
 
 
     //去重
-    tools.String.Distinct = function (value) {
+    function Distinct(value) {
         var r = [], hash = {};
         for (var i = 0, v; (v = value[i]) != null; i++) {
             if (!hash[v]) {
@@ -239,7 +239,7 @@
      *   @samplecode
      *   tools.String.Format("{0},Hello World ！","小明")
      **/
-    tools.String.Format = function () {
+    function Format() {
         str = tools.Checkout.IsNullOrEmpty(arguments[0]) ? "" : String(arguments[0]);
         if ($.isArray(arguments[1])) {
             for (var i = 0; i < arguments[1].length; i++) {
@@ -256,7 +256,7 @@
     }
 
     //创建GUID唯一标识
-    tools.String.NewGuid = function () {
+    function NewGuid() {
         function S4() {
             return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
         }
@@ -266,22 +266,23 @@
     //  获取浏览器的名称以及版本号。
     //  判断浏览器版本示例：判断浏览器是否为IE：  coreUtil.browser.msie == true，判断浏览器是否为 Chrome：window.browser.chrome == true
     //  判断浏览器版本号：IE下可能的值为 6.0/7.0/8.0/9.0/10.0 等等。
-    var _matched, _browser;
-    var _userAgentMatch = function (userAgent) {
-        userAgent = userAgent.toLowerCase();
-        var match = /(chrome)[ \/]([\w.]+)/.exec(userAgent) ||
-            /(webkit)[ \/]([\w.]+)/.exec(userAgent) ||
-            /(opera)(?:.*version|)[ \/]([\w.]+)/.exec(userAgent) ||
-            /(msie) ([\w.]+)/.exec(userAgent) ||
-            userAgent.indexOf("compatible") < 0 && /(mozilla)(?:.*? rv:([\w.]+)|)/.exec(userAgent) || [];
-        return { browser: match[1] || "", version: match[2] || "0" };
-    };
-    _matched = _userAgentMatch(window.navigator.userAgent);
-    _browser = {};
-    if (_matched.browser) { _browser[_matched.browser] = true; _browser.version = _matched.version; }
-    if (_browser.chrome) { _browser.webkit = true; } else if (_browser.webkit) { _browser.safari = true; }
-
-    tools.Brower.basic = _browser;
+    function basic() {
+        var _matched, _browser;
+        var _userAgentMatch = function (userAgent) {
+            userAgent = userAgent.toLowerCase();
+            var match = /(chrome)[ \/]([\w.]+)/.exec(userAgent) ||
+                /(webkit)[ \/]([\w.]+)/.exec(userAgent) ||
+                /(opera)(?:.*version|)[ \/]([\w.]+)/.exec(userAgent) ||
+                /(msie) ([\w.]+)/.exec(userAgent) ||
+                userAgent.indexOf("compatible") < 0 && /(mozilla)(?:.*? rv:([\w.]+)|)/.exec(userAgent) || [];
+            return { browser: match[1] || "", version: match[2] || "0" };
+        };
+        _matched = _userAgentMatch(window.navigator.userAgent);
+        _browser = {};
+        if (_matched.browser) { _browser[_matched.browser] = true; _browser.version = _matched.version; }
+        if (_browser.chrome) { _browser.webkit = true; } else if (_browser.webkit) { _browser.safari = true; }
+        return _browser;
+    }
 
     /**
      *  获取当前网页参数
@@ -290,7 +291,7 @@
      *  @samplecode
      *    tools.Brower.Request("key")
      */
-    tools.Brower.Request = function (key) {
+    function Request(key) {
         var regexp = new RegExp("(^|&)" + key + "=([^&]*)(&|$)", "i");
         var r = window.location.search.substr(1).match(regexp);
         if (r != null)
@@ -308,7 +309,7 @@
 	 *      Name:'小明',Age:18,Sex:1
      *  });
      **/
-    tools.Brower.Submit = function (action, object) {
+    function Submit(action, object) {
         var form = document.forms["_tools.Brower.Submit_"];
         //这样处理可以减少<form>冗余
         if (form) {
@@ -343,25 +344,39 @@
      * @key 键
      * @value 值（只支持字符串）
      */
-    tools.Brower.SetCache = function (key, value) {
+    function SetCache(key, value) {
         localStorage.setItem(key, value);
     };
     /**获取缓存
      * @key 键
      * @return 字符串
      */
-    tools.Brower.GetCache = function (key) {
+    function GetCache(key) {
         return localStorage.getItem(key);
     };
     //删除指定缓存数据
-    tools.Brower.RemoveCache = function (key) {
+    function RemoveCache(key) {
         localStorage.removeItem(key);
     };
     //清除缓存
-    tools.Brower.ClearCache = function () {
+    function ClearCache() {
         localStorage.clear();
     };
 
+    //初始化话
+    function _InitTools() {
+        $.each(tools.method, function (k, v) {
+            tools[k] = {};
+            v.forEach(function (f, e) {
+                tools[k][f] = function () {
+                    return eval(f).apply(tools[k][f], arguments);
+                };
+            })
+        })
+        window.tools = tools;
+    }
+
+    _InitTools();
 })(window, (function () {
     try {
         if (!jQuery)
