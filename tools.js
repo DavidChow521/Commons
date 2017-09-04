@@ -19,19 +19,19 @@
     var tools = {
         //版本
         tools: 'v1.1.0',
-
-        method: {
-            //格式化基类
-            Formatting: ["BackCardNo", "JsonDateTime", "MoneyRoundOff", "Chinese", "ChineseAmt", "TrimAll"],
-            //校验基类
-            Checkout: ["IsNullOrEmpty", "IsNullOrWhiteSpace", "IsNullOrWhiteSpace", "IsEmail", "IsZipCode", "IsChinese", "IsEnglish", "IsExists"],
-            //字符串基类
-            String: ["Distinct", "Format", "NewGuid"],
-            //浏览器基类
-            Brower: ["basic", "Request", "Submit", "SetCache", "GetCache", "RemoveCache", "ClearCache"]
-        }
-
     };
+
+    //声明默认函数
+    var Methods = {
+        //格式化基类
+        Formatting: ["BackCardNo", "JsonDateTime", "MoneyRoundOff", "Chinese", "ChineseAmt", "TrimAll"],
+        //校验基类
+        Checkout: ["IsNullOrEmpty", "IsNullOrWhiteSpace", "IsNullOrWhiteSpace", "IsEmail", "IsZipCode", "IsChinese", "IsEnglish", "IsExists"],
+        //字符串基类
+        String: ["Distinct", "Format", "NewGuid"],
+        //浏览器基类
+        Brower: ["basic", "Request", "Submit", "SetCache", "GetCache", "RemoveCache", "ClearCache"]
+    }
 
     /**
      *  格式化银行卡
@@ -365,7 +365,7 @@
 
     //初始化
     function _InitTools() {
-        $.each(tools.method, function (k, v) {
+        $.each(Methods, function (k, v) {
             tools[k] = {};
             v.forEach(function (f, e) {
                 tools[k][f] = function () {
