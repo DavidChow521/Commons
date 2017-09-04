@@ -374,8 +374,8 @@
                 };
             })
         })
-        function call(that, fn, arguments) {
-            return eval(fn).apply(that, arguments);
+        function call(that, fn, args) {
+            return eval(fn).apply(that, args);
         }
         window.tools = tools;
     }
