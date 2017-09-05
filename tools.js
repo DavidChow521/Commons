@@ -15,12 +15,17 @@
 
  */
 
-(function (window, $, _tools) {
-    var _t =new _tools();
+(function (global, $, tools) {
+    var tool = new tools();
+    //C#自带GCC压缩会改变_t参数名（故将_t显式挂载到window下）不建议挂在window下tool被公开
+    //global.tool = new tools();
+
     //tools.js
-    var tools = {
+    var _tools = {
         //版本
-        tools: 'v1.1.0',
+        tools: 'v1.2.0',
+        //开启调试
+        debug:true,
     };
 
     //声明函数
@@ -30,7 +35,7 @@
         //校验基类
         Checkout: ["IsNullOrEmpty", "IsNullOrWhiteSpace", "IsNullOrWhiteSpace", "IsEmail", "IsZipCode", "IsChinese", "IsEnglish", "IsExists"],
         //字符串基类
-        String: ["Distinct", "Format", "NewGuid", "VerifyCode"],
+        String: ["Distinct", "Format", "NewGuid"],
         //浏览器基类
         Brower: ["basic", "Request", "Submit", "SetCache", "GetCache", "RemoveCache", "ClearCache"]
     }
@@ -38,18 +43,24 @@
     //初始化
     function _InitTools() {
         $.each(Methods, function (k, v) {
-            tools[k] = {};
+            _tools[k] = {};
             v.forEach(function (f, e) {
-                tools[k][f] = function () {
+                _tools[k][f] = function () {
                     return call(this, f, arguments);
-                    //return eval("_t."+fn).apply(tools[k][f], arguments);
+                    //return eval("tools."+fn).apply(tools[k][f], arguments);
                 };
             })
         })
         function call(that, fn, args) {
-            return eval("_t."+fn).apply(that, args);
+            return eval("tool." + fn).apply(that, args);
         }
-        window.tools = tools;
+        global.tools = _tools;
+
+        //调试日志
+        if (_tools.debug) {
+            console.log("%c tools初始化成功！", "color:#5EB0FA");
+            console.log(_tools);
+        }
     }
 
     _InitTools();
@@ -63,6 +74,9 @@
         throw new ReferenceError("tools.js Depend On JQuery !");
     }
 })(), function () {
+    'use strict';
+
+    var that = this;
 
     /**
      *  格式化银行卡
@@ -78,7 +92,7 @@
     this.BackCardNo = function (cardno, replacing, index) {
         var i = 4,
             r = " ";
-        if (!IsNullOrEmpty(index)) {
+        if (!that.IsNullOrEmpty(index)) {
             if ($.isNumeric(index))
                 i = index;
         }
@@ -126,12 +140,12 @@
     //金额四舍五入(数额,保留位数,币种符号)
     this.MoneyRoundOff = function (money, index, currency) {
         var i = 2;
-        if (!tools.Checkout.IsNullOrEmpty(index)) {
+        if (!that.IsNullOrEmpty(index)) {
             if ($.isNumeric(index))
                 i = index;
         }
         if ($.isNumeric(money)) {
-            if (!tools.Checkout.IsNullOrEmpty(currency)) {
+            if (!that.IsNullOrEmpty(currency)) {
                 return currency + (parseFloat(money)).toFixed(i);
             }
             return (parseFloat(money)).toFixed(i);
@@ -168,7 +182,7 @@
     this.ChineseAmt = function (arabnum) {
         if (!/^\d*(\.\d*)?$/.test(arabnum)) return ""; //{ alert("Number is wrong!"); return "Number is wrong!"; }
         arabnum = parseFloat(arabnum).toFixed(2);
-        var cnNum = tools.Formatting.Chinese(arabnum);
+        var cnNum = that.Chinese(arabnum);
         var a = cnNum.split("点");
         var ret = "";
         ret += (a[0] + "圆");
@@ -190,7 +204,7 @@
     this.TrimAll = function (value, center) {
         var c = true,
             value = $.trim(value);
-        if (!tools.Checkout.IsNullOrEmpty(center))
+        if (!that.IsNullOrEmpty(center))
             c = center;
         if (c) {
             return value.replace(/[\s]/g, '');
@@ -210,30 +224,30 @@
 
     //判断传入的字符串是否为Null或者为空字符串或者全是空格。
     this.IsNullOrWhiteSpace = function (value) {
-        return IsNullOrEmpty(value) || $.trim(String(value)) === "";
+        return that.IsNullOrEmpty(value) || $.trim(String(value)) === "";
     };
 
     //判断当前value是否是正确的 电子邮箱地址(Email) 格式。
     this.IsEmail = function (value) {
-        str = tools.Checkout.isNullOrEmpty(value) ? "" : String(value);
+        str = that.IsNullOrEmpty(value) ? "" : String(value);
         return /^((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?$/i.test(value);
     };
 
     //判断当前value是否是正确的 邮政编码(中国) 格式。
     this.IsZipCode = function (value) {
-        str = tools.Checkout.isNullOrEmpty(value) ? "" : String(value);
+        str = that.IsNullOrEmpty(value) ? "" : String(value);
         return /^[\d]{6}$/.test(value);
     };
 
     //验证中文
     this.IsChinese = function (value) {
-        str = tools.Checkout.IsNullOrEmpty(value) ? "" : String(value);
+        str = that.IsNullOrEmpty(value) ? "" : String(value);
         return /^[\u0391-\uFFE5]+$/i.test(value);
     };
 
     //验证英文
     this.IsEnglish = function (value) {
-        str = tools.Checkout.IsNullOrEmpty(value) ? "" : String(value);
+        str = that.IsNullOrEmpty(value) ? "" : String(value);
         return /^[A-Za-z]+$/i.test(value);
     };
 
@@ -271,7 +285,7 @@
      *   tools.String.Format("{0},Hello World ！","小明")
      **/
     this.Format = function () {
-        str = tools.Checkout.IsNullOrEmpty(arguments[0]) ? "" : String(arguments[0]);
+        var str = that.IsNullOrEmpty(arguments[0]) ? "" : String(arguments[0]);
         if ($.isArray(arguments[1])) {
             for (var i = 0; i < arguments[1].length; i++) {
                 value = arguments[1][i] ? arguments[1][i] : "";
@@ -293,44 +307,6 @@
         }
         return (S4() + S4() + S4() + S4() + S4() + S4() + S4() + S4());
     };
-
-    //生成验证码,接受0-1位参数：长度
-    this.VerifyCode = function () {
-        var sCodes = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        var sCodeArr = sCodes.split('');
-        var len = 4;
-        if (arguments.length > 0 && !isNaN(arguments[0])) {
-            if (arguments[0] * 1 >= 4 && arguments[0] * 1 <= 8)
-                len = arguments[0] * 1;
-        }
-        var randIndex, tempArr = [], retCode = '', ie8 = IE8_BROWSER(), isContain = false;
-        for (var i = 0; i < len;) {
-            randIndex = getRandomNum(0, sCodeArr.length - 1);
-            if (ie8) {
-                for (var ii = 0; ii < tempArr.length; ii++) {
-                    if (tempArr[ii] == randIndex) {
-                        isContain = true;
-                        break;
-                    } else {
-                        isContain = false;
-                    }
-                }
-            }
-            else {
-                if (tempArr.indexOf(randIndex) >= 0)
-                    isContain = true;
-                else
-                    isContain = false;
-            }
-
-            if (!isContain) {
-                tempArr.push(randIndex);
-                retCode += sCodeArr[randIndex];
-                i++;
-            }
-        }
-        return retCode;
-    }
 
 
     //  获取浏览器的名称以及版本号。
@@ -380,20 +356,20 @@
      *  });
      **/
     this.Submit = function (action, object) {
-        var form = document.forms["_tools.Brower.Submit_"];
+        var form = document.forms["_tools.Submit_"];
         //这样处理可以减少<form>冗余
         if (form) {
             form.innerHTML = "";
         } else {
             //创建表单
             form = document.createElement("form");
-            form.name = "_tools.Brower.Submit_";
+            form.name = "_tools.Submit_";
             form.style = "display:none";
             form.method = "post"
             form.target = "_blank";
         }
 
-        form.id = tools.String.Format("_Submit_{0}", new Date().getTime());
+        form.id = that.Format("_Submit_{0}", new Date().getTime());
         form.action = action;
 
         //创建参数
