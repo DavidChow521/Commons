@@ -15,7 +15,7 @@
 
  */
 
-(function (global, $, tools) {
+(function (global,tools) {
     ////1.C#自带GCC压缩会改变tool变量名
     var tool = new tools();
 
@@ -66,16 +66,7 @@
     }
 
     _InitTools();
-})(window, (function () {
-    try {
-        if (!jQuery)
-            return undefined;
-        else
-            return jQuery;
-    } catch (e) {
-        throw new ReferenceError("tools.js Depend On JQuery !");
-    }
-})(), function () {
+}(this, function () {
     'use strict';
 
     var that = this;
@@ -410,4 +401,4 @@
     this.ClearCache = function () {
         localStorage.clear();
     };
-})
+}))
