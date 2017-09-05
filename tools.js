@@ -14,24 +14,55 @@
  //复制此方法放在需要调用的地方(详情请看 tools.js    by mark david Chow)
 
  */
-(function (window, $, undefined) {
+
+(function (window, $, _tools) {
+    var _t =new _tools();
     //tools.js
     var tools = {
         //版本
         tools: 'v1.1.0',
     };
 
-    //声明默认函数
+    //声明函数
     var Methods = {
         //格式化基类
         Formatting: ["BackCardNo", "JsonDateTime", "MoneyRoundOff", "Chinese", "ChineseAmt", "TrimAll"],
         //校验基类
         Checkout: ["IsNullOrEmpty", "IsNullOrWhiteSpace", "IsNullOrWhiteSpace", "IsEmail", "IsZipCode", "IsChinese", "IsEnglish", "IsExists"],
         //字符串基类
-        String: ["Distinct", "Format", "NewGuid"],
+        String: ["Distinct", "Format", "NewGuid", "VerifyCode"],
         //浏览器基类
         Brower: ["basic", "Request", "Submit", "SetCache", "GetCache", "RemoveCache", "ClearCache"]
     }
+
+    //初始化
+    function _InitTools() {
+        $.each(Methods, function (k, v) {
+            tools[k] = {};
+            v.forEach(function (f, e) {
+                tools[k][f] = function () {
+                    return call(this, f, arguments);
+                    //return eval("_t."+fn).apply(tools[k][f], arguments);
+                };
+            })
+        })
+        function call(that, fn, args) {
+            return eval("_t."+fn).apply(that, args);
+        }
+        window.tools = tools;
+    }
+
+    _InitTools();
+})(window, (function () {
+    try {
+        if (!jQuery)
+            return undefined;
+        else
+            return jQuery;
+    } catch (e) {
+        throw new ReferenceError("tools.js Depend On JQuery !");
+    }
+})(), function () {
 
     /**
      *  格式化银行卡
@@ -44,7 +75,7 @@
      *    2.tools.Formatting.BackCardNo('17072615244558938683','-') return '1707-2615-2445-5893-8683'
      *    3.tools.Formatting.BackCardNo('17072615244558938683',',',3) return '170,726,152,445,589,386,83'
      **/
-    function BackCardNo(cardno, replacing, index) {
+    this.BackCardNo = function (cardno, replacing, index) {
         var i = 4,
             r = " ";
         if (!IsNullOrEmpty(index)) {
@@ -69,7 +100,7 @@
      *     2.tools.Formatting.JsonDateTime("/Date(1405056837780)/","/") return 2014/07/11 13:33:57
      *     3.tools.Formatting.JsonDateTime("/Date(1405056837780)/","/",false) return 2014/07/11
      */
-    function JsonDateTime(date, replacing, showtime) {
+    this.JsonDateTime = function (date, replacing, showtime) {
         var r = "-",
             s = true;
         if (typeof (replacing) !== undefined && $.trim(replacing) !== "")
@@ -93,7 +124,7 @@
     }
 
     //金额四舍五入(数额,保留位数,币种符号)
-    function MoneyRoundOff(money, index, currency) {
+    this.MoneyRoundOff = function (money, index, currency) {
         var i = 2;
         if (!tools.Checkout.IsNullOrEmpty(index)) {
             if ($.isNumeric(index))
@@ -109,7 +140,7 @@
     };
 
     //阿拉伯数字转为中文大写
-    function Chinese(arabnum) {
+    this.Chinese = function (arabnum) {
         if (!/^\d*(\.\d*)?$/.test(arabnum)) { alert("Number is wrong!"); return "Number is wrong!"; }
         var A = new Array("零", "壹", "贰", "叁", "肆", "伍", "陆", "柒", "捌", "玖");
         var B = new Array("", "拾", "佰", "仟", "万", "億", "点", "");
@@ -134,7 +165,7 @@
     };
 
     //阿拉伯数字金额转为中文大写金额,精度到分
-    function ChineseAmt(arabnum) {
+    this.ChineseAmt = function (arabnum) {
         if (!/^\d*(\.\d*)?$/.test(arabnum)) return ""; //{ alert("Number is wrong!"); return "Number is wrong!"; }
         arabnum = parseFloat(arabnum).toFixed(2);
         var cnNum = tools.Formatting.Chinese(arabnum);
@@ -156,7 +187,7 @@
     }
 
     //去除首尾中间空白字符(参数,中间空格)
-    function TrimAll(value, center) {
+    this.TrimAll = function (value, center) {
         var c = true,
             value = $.trim(value);
         if (!tools.Checkout.IsNullOrEmpty(center))
@@ -173,41 +204,41 @@
 
 
     //判断传入的字符串是否为Null或者为空字符串。
-    function IsNullOrEmpty(value) {
+    this.IsNullOrEmpty = function (value) {
         return value === undefined || value === null || value === "";
     };
 
     //判断传入的字符串是否为Null或者为空字符串或者全是空格。
-    function IsNullOrWhiteSpace(value) {
+    this.IsNullOrWhiteSpace = function (value) {
         return IsNullOrEmpty(value) || $.trim(String(value)) === "";
     };
 
     //判断当前value是否是正确的 电子邮箱地址(Email) 格式。
-    function IsEmail(value) {
+    this.IsEmail = function (value) {
         str = tools.Checkout.isNullOrEmpty(value) ? "" : String(value);
         return /^((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?$/i.test(value);
     };
 
     //判断当前value是否是正确的 邮政编码(中国) 格式。
-    function IsZipCode(value) {
+    this.IsZipCode = function (value) {
         str = tools.Checkout.isNullOrEmpty(value) ? "" : String(value);
         return /^[\d]{6}$/.test(value);
     };
 
     //验证中文
-    function IsChinese(value) {
+    this.IsChinese = function (value) {
         str = tools.Checkout.IsNullOrEmpty(value) ? "" : String(value);
         return /^[\u0391-\uFFE5]+$/i.test(value);
     };
 
     //验证英文
-    function IsEnglish(value) {
+    this.IsEnglish = function (value) {
         str = tools.Checkout.IsNullOrEmpty(value) ? "" : String(value);
         return /^[A-Za-z]+$/i.test(value);
     };
 
     //是否存在
-    function IsExists(s) {
+    this.IsExists = function (s) {
         var hash = {};
         for (var i in s) {
             if (hash[s[i]])
@@ -222,7 +253,7 @@
 
 
     //去重
-    function Distinct(value) {
+    this.Distinct = function (value) {
         var r = [], hash = {};
         for (var i = 0, v; (v = value[i]) != null; i++) {
             if (!hash[v]) {
@@ -239,7 +270,7 @@
      *   @samplecode
      *   tools.String.Format("{0},Hello World ！","小明")
      **/
-    function Format() {
+    this.Format = function () {
         str = tools.Checkout.IsNullOrEmpty(arguments[0]) ? "" : String(arguments[0]);
         if ($.isArray(arguments[1])) {
             for (var i = 0; i < arguments[1].length; i++) {
@@ -256,17 +287,56 @@
     }
 
     //创建GUID唯一标识
-    function NewGuid() {
+    this.NewGuid = function () {
         function S4() {
             return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
         }
         return (S4() + S4() + S4() + S4() + S4() + S4() + S4() + S4());
     };
 
+    //生成验证码,接受0-1位参数：长度
+    this.VerifyCode = function () {
+        var sCodes = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        var sCodeArr = sCodes.split('');
+        var len = 4;
+        if (arguments.length > 0 && !isNaN(arguments[0])) {
+            if (arguments[0] * 1 >= 4 && arguments[0] * 1 <= 8)
+                len = arguments[0] * 1;
+        }
+        var randIndex, tempArr = [], retCode = '', ie8 = IE8_BROWSER(), isContain = false;
+        for (var i = 0; i < len;) {
+            randIndex = getRandomNum(0, sCodeArr.length - 1);
+            if (ie8) {
+                for (var ii = 0; ii < tempArr.length; ii++) {
+                    if (tempArr[ii] == randIndex) {
+                        isContain = true;
+                        break;
+                    } else {
+                        isContain = false;
+                    }
+                }
+            }
+            else {
+                if (tempArr.indexOf(randIndex) >= 0)
+                    isContain = true;
+                else
+                    isContain = false;
+            }
+
+            if (!isContain) {
+                tempArr.push(randIndex);
+                retCode += sCodeArr[randIndex];
+                i++;
+            }
+        }
+        return retCode;
+    }
+
+
     //  获取浏览器的名称以及版本号。
     //  判断浏览器版本示例：判断浏览器是否为IE：  coreUtil.browser.msie == true，判断浏览器是否为 Chrome：window.browser.chrome == true
     //  判断浏览器版本号：IE下可能的值为 6.0/7.0/8.0/9.0/10.0 等等。
-    function basic() {
+    this.basic = function () {
         var _matched, _browser;
         var _userAgentMatch = function (userAgent) {
             userAgent = userAgent.toLowerCase();
@@ -291,7 +361,7 @@
      *  @samplecode
      *    tools.Brower.Request("key")
      */
-    function Request(key) {
+    this.Request = function (key) {
         var regexp = new RegExp("(^|&)" + key + "=([^&]*)(&|$)", "i");
         var r = window.location.search.substr(1).match(regexp);
         if (r != null)
@@ -309,7 +379,7 @@
 	 *      Name:'小明',Age:18,Sex:1
      *  });
      **/
-    function Submit(action, object) {
+    this.Submit = function (action, object) {
         var form = document.forms["_tools.Brower.Submit_"];
         //这样处理可以减少<form>冗余
         if (form) {
@@ -344,50 +414,22 @@
      * @key 键
      * @value 值（只支持字符串）
      */
-    function SetCache(key, value) {
+    this.SetCache = function (key, value) {
         localStorage.setItem(key, value);
     };
     /**获取缓存
      * @key 键
      * @return 字符串
      */
-    function GetCache(key) {
+    this.GetCache = function (key) {
         return localStorage.getItem(key);
     };
     //删除指定缓存数据
-    function RemoveCache(key) {
+    this.RemoveCache = function (key) {
         localStorage.removeItem(key);
     };
     //清除缓存
-    function ClearCache() {
+    this.ClearCache = function () {
         localStorage.clear();
     };
-
-    //初始化
-    function _InitTools() {
-        $.each(Methods, function (k, v) {
-            tools[k] = {};
-            v.forEach(function (f, e) {
-                tools[k][f] = function () {
-                    return call(this, f, arguments);
-                    //return eval(f).apply(tools[k][f], arguments);
-                };
-            })
-        })
-        function call(that, fn, args) {
-            return eval(fn).apply(that, args);
-        }
-        window.tools = tools;
-    }
-
-    _InitTools();
-})(window, (function () {
-    try {
-        if (!jQuery)
-            return undefined;
-        else
-            return jQuery;
-    } catch (e) {
-        throw new ReferenceError("tools.js Depend On JQuery !");
-    }
-})())
+})
