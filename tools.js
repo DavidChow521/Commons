@@ -16,16 +16,21 @@
  */
 
 (function (global, $, tools) {
-    var tool = new tools();
-    //C#自带GCC压缩会改变_t参数名（故将_t显式挂载到window下）不建议挂在window下tool被公开
+    ////1.C#自带GCC压缩会改变tool变量名
+    //var tool = new tools();
+
+    ////2.将tool显式挂载到window下(不建议挂在window下tool被公开)
     //global.tool = new tools();
+
+    ////3.此处理能解决压缩不公开
+    eval("var tool = new tools()");
 
     //tools.js
     var _tools = {
         //版本
         tools: 'v1.2.0',
         //开启调试
-        debug:true,
+        debug: false,
     };
 
     //声明函数
