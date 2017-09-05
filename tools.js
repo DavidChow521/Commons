@@ -15,12 +15,12 @@
 
  */
 
-(function (global,tools) {
-    ////1.C#自带GCC压缩会改变tool变量名
-    var tool = new tools();
+(function (global, factory) {
+    ////1.C#自带GCC压缩会改变tools变量名
+    var tools = new factory();
 
-    ////2.将tool显式挂载到window下(不建议挂在window下tool被公开)
-    //global.tool = new tools();
+    ////2.将tools显式挂载到window下(不建议挂在window下tools被公开)
+    //global.tools = new factory();
 
     //tools.js
     var _tools = {
@@ -54,7 +54,7 @@
             })
         })
         function call(that, fn, args) {
-            return eval("tool." + fn).apply(that, args);
+            return eval("tools." + fn).apply(that, args);
         }
         global.tools = _tools;
 
