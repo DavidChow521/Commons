@@ -3,7 +3,7 @@
  * @CREATEDATE:                 August 03st 2017.
  * @NAME:                       tools 1.0.0
  * @DESCRIPTION:                常用js工具类
- * @BLOG:                       http://blog.csdn.net/baidu_25382371/article/details/77053972
+ * @BLOG:                       http://blog.csdn.net/baidu_25382371
  * @License:                    You may use tools-js under the terms of the MIT License (SeeLICENSE).
  * -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
  *[Import Of]
@@ -16,31 +16,32 @@
  */
 
 (function (global, factory) {
-    ////1.C#自带GCC压缩会改变tools变量名
-    var tools = new factory();
-
-    ////2.将tools显式挂载到window下(不建议挂在window下tools被公开)
+    ////1.将tools显式挂载到window下(不建议挂在window下tools被公开)
     //global.tools = new factory();
 
-    //tools.js
-    var _tools = {
-        //版本
-        tools: 'v1.2.0',
-        //开启调试
-        debug: false,
-    };
+    var
+        ////2.C#自带GCC压缩会改变tools变量名
+        tools = new factory(),
 
-    //声明函数
-    var Methods = {
-        //格式化基类
-        Formatting: ["BackCardNo", "JsonDateTime", "MoneyRoundOff", "Chinese", "ChineseAmt", "TrimAll"],
-        //校验基类
-        Checkout: ["IsNullOrEmpty", "IsNullOrWhiteSpace", "IsNullOrWhiteSpace", "IsEmail", "IsZipCode", "IsChinese", "IsEnglish", "IsExists"],
-        //字符串基类
-        String: ["Distinct", "Format", "NewGuid"],
-        //浏览器基类
-        Brower: ["basic", "Request", "Submit", "SetCache", "GetCache", "RemoveCache", "ClearCache"]
-    }
+        //tools.js
+        _tools = {
+            //版本
+            tools: 'v1.2.0',
+            //开启调试
+            debug: false,
+        },
+
+        //声明函数
+        Methods = {
+            //格式化基类
+            Formatting: ["BackCardNo", "JsonDateTime", "MoneyRoundOff", "Chinese", "ChineseAmt", "TrimAll"],
+            //校验基类
+            Checkout: ["IsNullOrEmpty", "IsNullOrWhiteSpace", "IsNullOrWhiteSpace", "IsEmail", "IsZipCode", "IsChinese", "IsEnglish", "IsExists"],
+            //字符串基类
+            String: ["Distinct", "Format", "NewGuid"],
+            //浏览器基类
+            Brower: ["basic", "Request", "Submit", "SetCache", "GetCache", "RemoveCache", "ClearCache"]
+        };
 
     //初始化
     function _InitTools() {
@@ -206,10 +207,6 @@
 
     }
 
-
-
-
-
     //判断传入的字符串是否为Null或者为空字符串。
     this.IsNullOrEmpty = function (value) {
         return value === undefined || value === null || value === "";
@@ -255,10 +252,6 @@
         return false;
     }
 
-
-
-
-
     //去重
     this.Distinct = function (value) {
         var r = [], hash = {};
@@ -300,7 +293,6 @@
         }
         return (S4() + S4() + S4() + S4() + S4() + S4() + S4() + S4());
     };
-
 
     //  获取浏览器的名称以及版本号。
     //  判断浏览器版本示例：判断浏览器是否为IE：  coreUtil.browser.msie == true，判断浏览器是否为 Chrome：window.browser.chrome == true
