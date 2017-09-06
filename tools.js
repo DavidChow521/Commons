@@ -40,7 +40,8 @@
             //字符串基类
             String: ["Distinct", "Format", "NewGuid"],
             //浏览器基类
-            Brower: ["basic", "Request", "Submit", "SetCache", "GetCache", "RemoveCache", "ClearCache"]
+            Brower: ["basic", "Request", "Submit", "SetCache", "GetCache", "RemoveCache", "ClearCache","DownloadCanvas"],
+
         };
 
     //初始化
@@ -70,7 +71,9 @@
 }(this, function () {
     'use strict';
 
-    var that = this;
+    var that = this,
+
+        now=new Date();
 
     /**
      *  格式化银行卡
@@ -393,4 +396,30 @@
     this.ClearCache = function () {
         localStorage.clear();
     };
+
+    /**保存canvas图片
+     * @canvas 对象
+     * @filename 文件名称
+     * @image 保存类型
+     */
+    this.DownloadCanvas = function (canvas, filename, image) {
+        //声明保存类型
+        var img = "image/png",
+            //图片名称
+            name = that.NewGuid(),
+            //创建a标签元素
+            A = document.createElement('a');
+        if (!that.IsNullOrEmpty(filename)) {
+            name = filename;
+        }
+        A.download = name;
+        if (!that.IsNullOrEmpty(image)) {
+            img = image;
+        }
+        A.href = canvas.toDataURL(img);
+        document.body.appendChild(A);
+        A.click();
+        document.body.removeChild(A);
+    }
+
 }))
