@@ -397,7 +397,7 @@
         localStorage.clear();
     };
 
-    /**保存canvas图片
+    /**保存canvas图片(不支持移动端)
      * @canvas 对象
      * @filename 文件名称
      * @image 保存类型
