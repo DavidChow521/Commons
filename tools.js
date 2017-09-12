@@ -16,17 +16,16 @@
  */
 
 (function (global, factory) {
-    ////1.将tools显式挂载到window下(不建议挂在window下tools被公开)
+    //1.将tools显式挂载到window下可避免GCC(Google Closure Compiler)压缩后改变tools变量名(不建议挂在window下factory被公开)
     //global.tools = new factory();
 
     var
-        ////2.C#自带GCC压缩会改变tools变量名
         tools = new factory(),
 
         //tools.js
         _tools = {
             //版本
-            tools: 'v1.2.0',
+            tools: 'v1.2.1',
             //开启调试
             debug: false,
         },
@@ -36,7 +35,7 @@
             //格式化基类
             Formatting: ["BackCardNo", "JsonDateTime", "MoneyRoundOff", "Chinese", "ChineseAmt", "TrimAll"],
             //校验基类
-            Checkout: ["IsNullOrEmpty", "IsNullOrWhiteSpace", "IsNullOrWhiteSpace", "IsEmail", "IsZipCode", "IsChinese", "IsEnglish", "IsExists"],
+            Checkout: ["IsNullOrEmpty", "IsNullOrWhiteSpace", "IsEmail", "IsZipCode", "IsChinese", "IsEnglish", "IsExists"],
             //字符串基类
             String: ["Distinct", "Format", "NewGuid"],
             //浏览器基类
@@ -51,7 +50,7 @@
             v.forEach(function (f, e) {
                 _tools[k][f] = function () {
                     return call(this, f, arguments);
-                    //return eval("tools."+fn).apply(tools[k][f], arguments);
+                    //return eval("tools."+fn).apply(_tools[k][f], arguments);
                 };
             })
         })
