@@ -466,6 +466,9 @@
     Date.prototype.GetLastDay = function () {
         return new Date(new Date(this.getYear(), this.getMonth() + 1, 1).getTime() - 1000 * 60 * 60 * 24).getDate();
     }
+    Date.prototype.GetWeekFirstDay = function () {
+        return new Date(new Date(this.getFullYear(),this.getMonth(),this.getDate()-this.getDay())).getDate();
+    }
     Date.prototype.GetWeekFirstDate = function () {
         return new Date(new Date(this.getFullYear(),this.getMonth(),this.getDate()-this.getDay()));
     }
