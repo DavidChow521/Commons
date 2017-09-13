@@ -25,7 +25,7 @@
         //tools.js
         _tools = {
             //版本
-            tools: 'v1.2.1',
+            tools: 'v1.2.2',
             //开启调试
             debug: false,
             //当前时间
@@ -407,18 +407,18 @@
             //图片名称
             name = that.NewGuid(),
             //创建a标签元素
-            A = document.createElement('a');
+            a = document.createElement('a');
         if (!that.IsNullOrEmpty(filename)) {
             name = filename;
         }
-        A.download = name;
+        a.download = name;
         if (!that.IsNullOrEmpty(image)) {
             img = image;
         }
-        A.href = canvas.toDataURL(img);
-        document.body.appendChild(A);
-        A.click();
-        document.body.removeChild(A);
+        a.href = canvas.toDataURL(img);
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
     }
 
     //Start扩展时间基元
@@ -443,12 +443,20 @@
         }
         return format;
     };
+    Date.prototype.AddMonths = function (month) {
+        this.setMonth(this.getMonth() + month)
+        return this;
+    }
     Date.prototype.AddDays = function (day) {
         this.setDate(this.getDate() + day)
         return this;
     }
     Date.prototype.AddHours = function (hour) {
         this.setHours(this.getHours() + hour)
+        return this;
+    }
+    Date.prototype.AddMinutes = function (minute) {
+        this.setMinutes(this.getMinutes() + minute)
         return this;
     }
     //End扩展时间基元
