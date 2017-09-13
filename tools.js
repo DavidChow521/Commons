@@ -28,6 +28,8 @@
             tools: 'v1.2.1',
             //开启调试
             debug: false,
+            //当前时间
+            now: new Date()
         },
 
         //声明函数
@@ -39,7 +41,7 @@
             //字符串基类
             String: ["Distinct", "Format", "NewGuid"],
             //浏览器基类
-            Brower: ["basic", "Request", "Submit", "SetCache", "GetCache", "RemoveCache", "ClearCache","DownloadCanvas"],
+            Brower: ["basic", "Request", "Submit", "SetCache", "GetCache", "RemoveCache", "ClearCache", "DownloadCanvas"],
 
         };
 
@@ -70,9 +72,7 @@
 }(this, function () {
     'use strict';
 
-    var that = this,
-
-        now=new Date();
+    var that = this;
 
     /**
      *  格式化银行卡
@@ -420,5 +420,37 @@
         A.click();
         document.body.removeChild(A);
     }
+
+    //Start扩展时间基元
+    Date.prototype.ToString = function (format) {
+        var date = {
+            "M+": this.getMonth() + 1,
+            "d+": this.getDate(),
+            "h+": this.getHours(),
+            "m+": this.getMinutes(),
+            "s+": this.getSeconds(),
+            "q+": Math.floor((this.getMonth() + 3) / 3),
+            "S+": this.getMilliseconds()
+        };
+        if (/(y+)/i.test(format)) {
+            format = format.replace(RegExp.$1, (this.getFullYear() + '').substr(4 - RegExp.$1.length));
+        }
+        for (var k in date) {
+            if (new RegExp("(" + k + ")").test(format)) {
+                format = format.replace(RegExp.$1, RegExp.$1.length == 1
+                    ? date[k] : ("00" + date[k]).substr(("" + date[k]).length));
+            }
+        }
+        return format;
+    };
+    Date.prototype.AddDays = function (day) {
+        this.setDate(this.getDate() + day)
+        return this;
+    }
+    Date.prototype.AddHours = function (hour) {
+        this.setHours(this.getHours() + hour)
+        return this;
+    }
+    //End扩展时间基元
 
 }))
