@@ -466,6 +466,9 @@
     Date.prototype.getLastDay = function () {
         return (new Date(new Date(this.getYear(), this.getMonth() + 1, 1).getTime() - 1000 * 60 * 60 * 24)).getDate();
     }
+    Date.prototype.getWeekFirstDate = function () {
+        return (new Date(this.getFullYear(),this.getMonth(),this.getDate()-this.getDay()));
+    }
     //End扩展时间基元
 
 }))
