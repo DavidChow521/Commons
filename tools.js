@@ -443,8 +443,8 @@
         }
         return format;
     };
-    Date.prototype.AddYears = function (month) {
-        this.setFullYear(this.getFullYear() + month)
+    Date.prototype.AddYears = function (year) {
+        this.setFullYear(this.getFullYear() + year)
         return this;
     }
     Date.prototype.AddMonths = function (month) {
