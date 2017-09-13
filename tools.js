@@ -463,6 +463,9 @@
         this.setMinutes(this.getMinutes() + minute)
         return this;
     }
+    Date.prototype.getLastDay = function () {
+        return (new Date(new Date(this.getYear(), this.getMonth() + 1, 1).getTime() - 1000 * 60 * 60 * 24)).getDate();
+    }
     //End扩展时间基元
 
 }))
