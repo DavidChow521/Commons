@@ -421,6 +421,9 @@
         document.body.removeChild(a);
     }
 
+
+/********************************************************原生函数扩展********************************************************/
+
     //Start扩展时间基元
     Date.prototype.ToString = function (format) {
         var date = {
@@ -443,6 +446,9 @@
         }
         return format;
     };
+    Date.prototype.Equals = function (date) {
+        return Date.parse(this)==Date.parse(date);
+    }
     Date.prototype.AddYears = function (year) {
         this.setFullYear(this.getFullYear() + year)
         return this;
