@@ -2,7 +2,7 @@
  * @AUTHOR:                     David Chow
  * @CREATEDATE:                 August 03st 2017.
  * @NAME:                       tools 1.0.0
- * @DESCRIPTION:                常用js工具类
+ * @DESCRIPTION:                常用js工具类,命名规范符合驼峰式大小写格式
  * @BLOG:                       http://blog.csdn.net/baidu_25382371
  * @License:                    You may use tools-js under the terms of the MIT License (SeeLICENSE).
  * -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -423,6 +423,11 @@
 
 
 /********************************************************原生函数扩展********************************************************/
+    //Start扩展字符串基元
+    String.prototype.Equals=function (str) {
+        return this===str;
+    }
+    //End扩展字符串基元
 
     //Start扩展时间基元
     Date.prototype.ToString = function (format) {
@@ -449,33 +454,33 @@
     Date.prototype.Equals = function (date) {
         return Date.parse(this)==Date.parse(date);
     }
-    Date.prototype.AddYears = function (year) {
+    Date.prototype.addYears = function (year) {
         this.setFullYear(this.getFullYear() + year)
         return this;
     }
-    Date.prototype.AddMonths = function (month) {
+    Date.prototype.addMonths = function (month) {
         this.setMonth(this.getMonth() + month)
         return this;
     }
-    Date.prototype.AddDays = function (day) {
+    Date.prototype.addDays = function (day) {
         this.setDate(this.getDate() + day)
         return this;
     }
-    Date.prototype.AddHours = function (hour) {
+    Date.prototype.addHours = function (hour) {
         this.setHours(this.getHours() + hour)
         return this;
     }
-    Date.prototype.AddMinutes = function (minute) {
+    Date.prototype.addMinutes = function (minute) {
         this.setMinutes(this.getMinutes() + minute)
         return this;
     }
-    Date.prototype.GetLastDay = function () {
+    Date.prototype.getLastDay = function () {
         return new Date(new Date(this.getYear(), this.getMonth() + 1, 1).getTime() - 1000 * 60 * 60 * 24).getDate();
     }
-    Date.prototype.GetWeekFirstDay = function () {
+    Date.prototype.getWeekFirstDay = function () {
         return new Date(new Date(this.getFullYear(),this.getMonth(),this.getDate()-this.getDay())).getDate();
     }
-    Date.prototype.GetWeekFirstDate = function () {
+    Date.prototype.getWeekFirstDate = function () {
         return new Date(new Date(this.getFullYear(),this.getMonth(),this.getDate()-this.getDay()));
     }
     //End扩展时间基元
