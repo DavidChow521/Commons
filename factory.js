@@ -360,3 +360,65 @@ fty.api.downloadCanvas = function (canvas, filename, image) {
     document.body.removeChild(a);
 }
 
+/********************************************************原生函数扩展********************************************************/
+//Start扩展字符串基元
+String.prototype.Equals = function (str) {
+    return this === str;
+}
+//End扩展字符串基元
+
+//Start扩展时间基元
+Date.prototype.ToString = function (format) {
+    var date = {
+        "M+": this.getMonth() + 1,
+        "d+": this.getDate(),
+        "h+": this.getHours(),
+        "m+": this.getMinutes(),
+        "s+": this.getSeconds(),
+        "q+": Math.floor((this.getMonth() + 3) / 3),
+        "S+": this.getMilliseconds()
+    };
+    if (/(y+)/i.test(format)) {
+        format = format.replace(RegExp.$1, (this.getFullYear() + '').substr(4 - RegExp.$1.length));
+    }
+    for (var k in date) {
+        if (new RegExp("(" + k + ")").test(format)) {
+            format = format.replace(RegExp.$1, RegExp.$1.length == 1
+                ? date[k] : ("00" + date[k]).substr(("" + date[k]).length));
+        }
+    }
+    return format;
+};
+Date.prototype.Equals = function (date) {
+    return Date.parse(this) == Date.parse(date);
+}
+Date.prototype.addYears = function (year) {
+    this.setFullYear(this.getFullYear() + year)
+    return this;
+}
+Date.prototype.addMonths = function (month) {
+    this.setMonth(this.getMonth() + month)
+    return this;
+}
+Date.prototype.addDays = function (day) {
+    this.setDate(this.getDate() + day)
+    return this;
+}
+Date.prototype.addHours = function (hour) {
+    this.setHours(this.getHours() + hour)
+    return this;
+}
+Date.prototype.addMinutes = function (minute) {
+    this.setMinutes(this.getMinutes() + minute)
+    return this;
+}
+Date.prototype.getLastDay = function () {
+    return new Date(new Date(this.getYear(), this.getMonth() + 1, 1).getTime() - 1000 * 60 * 60 * 24).getDate();
+}
+Date.prototype.getWeekFirstDay = function () {
+    return new Date(new Date(this.getFullYear(), this.getMonth(), this.getDate() - this.getDay())).getDate();
+}
+Date.prototype.getWeekFirstDate = function () {
+    return new Date(new Date(this.getFullYear(), this.getMonth(), this.getDate() - this.getDay()));
+}
+//End扩展时间基元
