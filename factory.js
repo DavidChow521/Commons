@@ -27,7 +27,7 @@ fty.api = {};
 fty.api.backCardNo = function (cardno, replacing, index) {
     var i = 4,
         r = " ";
-    if (!that.IsNullOrEmpty(index)) {
+    if (!this.isNullOrEmpty(index)) {
         if ($.isNumeric(index))
             i = index;
     }
@@ -75,12 +75,12 @@ fty.api.jsonDateTime = function (date, replacing, showtime) {
 //金额四舍五入(数额,保留位数,币种符号)
 fty.api.moneyRoundOff = function (money, index, currency) {
     var i = 2;
-    if (!that.IsNullOrEmpty(index)) {
+    if (!this.isNullOrEmpty(index)) {
         if ($.isNumeric(index))
             i = index;
     }
     if ($.isNumeric(money)) {
-        if (!that.IsNullOrEmpty(currency)) {
+        if (!this.isNullOrEmpty(currency)) {
             return currency + (parseFloat(money)).toFixed(i);
         }
         return (parseFloat(money)).toFixed(i);
@@ -117,7 +117,7 @@ fty.api.chinese = function (arabnum) {
 fty.api.chineseAmt = function (arabnum) {
     if (!/^\d*(\.\d*)?$/.test(arabnum)) return ""; //{ alert("Number is wrong!"); return "Number is wrong!"; }
     arabnum = parseFloat(arabnum).toFixed(2);
-    var cnNum = that.Chinese(arabnum);
+    var cnNum = this.chinese(arabnum);
     var a = cnNum.split("点");
     var ret = "";
     ret += (a[0] + "圆");
@@ -139,7 +139,7 @@ fty.api.chineseAmt = function (arabnum) {
 fty.api.trimAll = function (value, center) {
     var c = true,
         value = $.trim(value);
-    if (!that.IsNullOrEmpty(center))
+    if (!this.isNullOrEmpty(center))
         c = center;
     if (c) {
         return value.replace(/[\s]/g, '');
@@ -155,30 +155,30 @@ fty.api.isNullOrEmpty = function (value) {
 
 //判断传入的字符串是否为Null或者为空字符串或者全是空格。
 fty.api.isNullOrWhiteSpace = function (value) {
-    return that.IsNullOrEmpty(value) || $.trim(String(value)) === "";
+    return this.isNullOrEmpty(value) || $.trim(String(value)) === "";
 };
 
 //判断当前value是否是正确的 电子邮箱地址(Email) 格式。
 fty.api.isEmail = function (value) {
-    value = that.IsNullOrEmpty(value) ? "" : String(value);
+    value = this.isNullOrEmpty(value) ? "" : String(value);
     return /^((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?$/i.test(value);
 };
 
 //判断当前value是否是正确的 邮政编码(中国) 格式。
 fty.api.isZipCode = function (value) {
-    value = that.IsNullOrEmpty(value) ? "" : String(value);
+    value = this.isNullOrEmpty(value) ? "" : String(value);
     return /^[\d]{6}$/.test(value);
 };
 
 //验证中文
 fty.api.isChinese = function (value) {
-    value = that.IsNullOrEmpty(value) ? "" : String(value);
+    value = this.isNullOrEmpty(value) ? "" : String(value);
     return /^[\u0391-\uFFE5]+$/i.test(value);
 };
 
 //验证英文
 fty.api.isEnglish = function (value) {
-    value = that.IsNullOrEmpty(value) ? "" : String(value);
+    value = this.isNullOrEmpty(value) ? "" : String(value);
     return /^[A-Za-z]+$/i.test(value);
 };
 
@@ -212,19 +212,7 @@ fty.api.distinct = function (value) {
  *   tools.String.Format("{0},Hello World ！","小明")
  **/
 fty.api.format = function () {
-    var str = that.IsNullOrEmpty(arguments[0]) ? "" : String(arguments[0]);
-    if ($.isArray(arguments[1])) {
-        for (var i = 0; i < arguments[1].length; i++) {
-            var value = arguments[1][i] ? arguments[1][i] : "";
-            str = str.replace(new RegExp("\\{" + i + "}", "gm"), value);
-        }
-    } else {
-        var data = $(arguments).slice(1, arguments.length);
-        for (var i = 0; i < data.length; i++) {
-            str = str.replace(new RegExp("\\{" + i + "}", "gm"), data[i]);
-        }
-    }
-    return str;
+    String.format.apply(this, arguments);
 }
 
 //创建GUID唯一标识
@@ -295,7 +283,7 @@ fty.api.submit = function (action, object) {
         form.target = "_blank";
     }
 
-    form.id = that.Format("_Submit_{0}", new Date().getTime());
+    form.id = this.format("_Submit_{0}", new Date().getTime());
     form.action = action;
 
     //创建参数
@@ -344,14 +332,14 @@ fty.api.downloadCanvas = function (canvas, filename, image) {
     //声明保存类型
     var img = "image/png",
         //图片名称
-        name = that.NewGuid(),
+        name = this.newGuid(),
         //创建a标签元素
         a = document.createElement('a');
-    if (!that.IsNullOrEmpty(filename)) {
+    if (!this.isNullOrEmpty(filename)) {
         name = filename;
     }
     a.download = name;
-    if (!that.IsNullOrEmpty(image)) {
+    if (!this.isNullOrEmpty(image)) {
         img = image;
     }
     a.href = canvas.toDataURL(img);
@@ -362,13 +350,28 @@ fty.api.downloadCanvas = function (canvas, filename, image) {
 
 /********************************************************原生函数扩展********************************************************/
 //Start扩展字符串基元
-String.prototype.Equals = function (str) {
+String.prototype.equals = function (str) {
     return this === str;
+}
+String.prototype.format = function () {
+    var str = fty.api.isNullOrEmpty(arguments[0]) ? "" : String(arguments[0]);
+    if ($.isArray(arguments[1])) {
+        for (var i = 0; i < arguments[1].length; i++) {
+            var value = arguments[1][i] ? arguments[1][i] : "";
+            str = str.replace(new RegExp("\\{" + i + "}", "gm"), value);
+        }
+    } else {
+        var data = $(arguments).slice(1, arguments.length);
+        for (var i = 0; i < data.length; i++) {
+            str = str.replace(new RegExp("\\{" + i + "}", "gm"), data[i]);
+        }
+    }
+    return str;
 }
 //End扩展字符串基元
 
 //Start扩展时间基元
-Date.prototype.ToString = function (format) {
+Date.prototype.format = function (format) {
     var date = {
         "M+": this.getMonth() + 1,
         "d+": this.getDate(),
@@ -388,8 +391,8 @@ Date.prototype.ToString = function (format) {
         }
     }
     return format;
-};
-Date.prototype.Equals = function (date) {
+}
+Date.prototype.equals = function (date) {
     return Date.parse(this) == Date.parse(date);
 }
 Date.prototype.addYears = function (year) {

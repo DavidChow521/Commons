@@ -273,19 +273,7 @@
      *   tools.String.Format("{0},Hello World ！","小明")
      **/
     this.Format = function () {
-        var str = that.IsNullOrEmpty(arguments[0]) ? "" : String(arguments[0]);
-        if ($.isArray(arguments[1])) {
-            for (var i = 0; i < arguments[1].length; i++) {
-                var value = arguments[1][i] ? arguments[1][i] : "";
-                str = str.replace(new RegExp("\\{" + i + "}", "gm"), value);
-            }
-        } else {
-            var data = $(arguments).slice(1, arguments.length);
-            for (var i = 0; i < data.length; i++) {
-                str = str.replace(new RegExp("\\{" + i + "}", "gm"), data[i]);
-            }
-        }
-        return str;
+        String.format.apply(this, arguments);
     }
 
     //创建GUID唯一标识
@@ -426,6 +414,21 @@
     //Start扩展字符串基元
     String.prototype.Equals = function (str) {
         return this === str;
+    }
+    String.prototype.format = function () {
+        var str = that.IsNullOrEmpty(arguments[0]) ? "" : String(arguments[0]);
+        if ($.isArray(arguments[1])) {
+            for (var i = 0; i < arguments[1].length; i++) {
+                var value = arguments[1][i] ? arguments[1][i] : "";
+                str = str.replace(new RegExp("\\{" + i + "}", "gm"), value);
+            }
+        } else {
+            var data = $(arguments).slice(1, arguments.length);
+            for (var i = 0; i < data.length; i++) {
+                str = str.replace(new RegExp("\\{" + i + "}", "gm"), data[i]);
+            }
+        }
+        return str;
     }
     //End扩展字符串基元
 
