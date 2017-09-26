@@ -422,10 +422,10 @@
     }
 
 
-/********************************************************原生函数扩展********************************************************/
+    /********************************************************原生函数扩展********************************************************/
     //Start扩展字符串基元
-    String.prototype.Equals=function (str) {
-        return this===str;
+    String.prototype.Equals = function (str) {
+        return this === str;
     }
     //End扩展字符串基元
 
@@ -452,7 +452,7 @@
         return format;
     };
     Date.prototype.Equals = function (date) {
-        return Date.parse(this)==Date.parse(date);
+        return Date.parse(this) == Date.parse(date);
     }
     Date.prototype.addYears = function (year) {
         this.setFullYear(this.getFullYear() + year)
@@ -478,10 +478,10 @@
         return new Date(new Date(this.getYear(), this.getMonth() + 1, 1).getTime() - 1000 * 60 * 60 * 24).getDate();
     }
     Date.prototype.getWeekFirstDay = function () {
-        return new Date(new Date(this.getFullYear(),this.getMonth(),this.getDate()-this.getDay())).getDate();
+        return new Date(new Date(this.getFullYear(), this.getMonth(), this.getDate() - this.getDay())).getDate();
     }
     Date.prototype.getWeekFirstDate = function () {
-        return new Date(new Date(this.getFullYear(),this.getMonth(),this.getDate()-this.getDay()));
+        return new Date(new Date(this.getFullYear(), this.getMonth(), this.getDate() - this.getDay()));
     }
     //End扩展时间基元
 
