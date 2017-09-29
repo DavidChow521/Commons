@@ -19,10 +19,9 @@
     //初始化控件
     factory.prototype.Init = function () {
         var
-            tools = this,
+            self = this,
 
-           //tools.js
-           _tools = {
+           defaults = {
                //版本
                tools: 'v1.2.2',
                //开启调试
@@ -44,27 +43,28 @@
 
            };
         $.each(Methods, function (k, v) {
-            _tools[k] = {};
+            defaults[k] = {};
             v.forEach(function (f, e) {
-                _tools[k][f] = function () {
+                defaults[k][f] = function () {
                     return call(this, f, arguments);
-                    //return eval("tools."+fn).apply(_tools[k][f], arguments);
+                    //return eval("self."+fn).apply(defaults[k][f], arguments);
                 };
             })
         })
         function call(that, fn, args) {
-            return eval("tools." + fn).apply(that, args);
+            return eval("self." + fn).apply(that, args);
         }
-        global.tools = _tools;
 
         //调试日志
-        if (_tools.debug) {
+        if (defaults.debug) {
             console.log("%c tools初始化成功！", "color:#5EB0FA");
             console.log(global.tools);
         }
+
+        return defaults;
     }
 
-    new factory().Init();
+    global.tools = new factory().Init();
 }(this, function () {
     'use strict';
 
