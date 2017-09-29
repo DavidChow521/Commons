@@ -58,7 +58,7 @@
         //调试日志
         if (defaults.debug) {
             console.log("%c tools初始化成功！", "color:#5EB0FA");
-            console.log(global.tools);
+            console.log(defaults);
         }
 
         return defaults;
