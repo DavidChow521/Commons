@@ -14,39 +14,35 @@
  //复制此方法放在需要调用的地方(详情请看 tools.js    by mark david Chow)
 
  */
-
 (function (global, factory) {
-    //1.将tools显式挂载到window下可避免GCC(Google Closure Compiler)压缩后改变tools变量名(不建议挂在window下factory被公开)
-    //global.tools = new factory();
 
-    var
-        tools = new factory(),
+    //初始化控件
+    factory.prototype.Init = function () {
+        var
+            tools = this,
 
-        //tools.js
-        _tools = {
-            //版本
-            tools: 'v1.2.2',
-            //开启调试
-            debug: false,
-            //当前时间
-            now: new Date()
-        },
+           //tools.js
+           _tools = {
+               //版本
+               tools: 'v1.2.2',
+               //开启调试
+               debug: false,
+               //当前时间
+               now: new Date()
+           },
 
-        //声明函数
-        Methods = {
-            //格式化基类
-            Formatting: ["BackCardNo", "JsonDateTime", "MoneyRoundOff", "Chinese", "ChineseAmt", "TrimAll"],
-            //校验基类
-            Checkout: ["IsNullOrEmpty", "IsNullOrWhiteSpace", "IsEmail", "IsZipCode", "IsChinese", "IsEnglish", "IsExists"],
-            //字符串基类
-            String: ["Distinct", "Format", "NewGuid"],
-            //浏览器基类
-            Brower: ["basic", "Request", "Submit", "SetCache", "GetCache", "RemoveCache", "ClearCache", "DownloadCanvas"],
+           //声明函数
+           Methods = {
+               //格式化基类
+               Formatting: ["BackCardNo", "JsonDateTime", "MoneyRoundOff", "Chinese", "ChineseAmt", "TrimAll"],
+               //校验基类
+               Checkout: ["IsNullOrEmpty", "IsNullOrWhiteSpace", "IsEmail", "IsZipCode", "IsChinese", "IsEnglish", "IsExists"],
+               //字符串基类
+               String: ["Distinct", "Format", "NewGuid"],
+               //浏览器基类
+               Brower: ["basic", "Request", "Submit", "SetCache", "GetCache", "RemoveCache", "ClearCache", "DownloadCanvas"],
 
-        };
-
-    //初始化
-    function _InitTools() {
+           };
         $.each(Methods, function (k, v) {
             _tools[k] = {};
             v.forEach(function (f, e) {
@@ -64,11 +60,11 @@
         //调试日志
         if (_tools.debug) {
             console.log("%c tools初始化成功！", "color:#5EB0FA");
-            console.log(_tools);
+            console.log(global.tools);
         }
     }
 
-    _InitTools();
+    new factory().Init();
 }(this, function () {
     'use strict';
 
@@ -216,7 +212,7 @@
 
     //判断传入的字符串是否为Null或者为空字符串或者全是空格。
     this.IsNullOrWhiteSpace = function (value) {
-        return that.IsNullOrEmpty(value) || $.trim(String(value)) === "";
+        return that.IsNullOrEmpty(value) || String(value).trim() === "";
     };
 
     //判断当前value是否是正确的 电子邮箱地址(Email) 格式。
@@ -254,6 +250,21 @@
         return false;
     }
 
+    //是否有效IPv4
+    this.IsIPv4 = function (ipv4) {
+        var reg = /^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/;
+        if (reg.exec(ipv4) == null) {
+            if (RegExp.$1 < 0 || RegExp.$1 > 255) return false;
+            if (RegExp.$2 < 0 || RegExp.$2 > 255) return false;
+            if (RegExp.$3 < 0 || RegExp.$3 > 255) return false;
+            if (RegExp.$4 < 0 || RegExp.$4 > 255) return false;
+        }
+        else {
+            return false
+        }
+        return true;
+    }
+
     //去重
     this.Distinct = function (value) {
         var r = [], hash = {};
@@ -273,7 +284,19 @@
      *   tools.String.Format("{0},Hello World ！","小明")
      **/
     this.Format = function () {
-        String.format.apply(this, arguments);
+        var str = that.IsNullOrEmpty(arguments[0]) ? "" : String(arguments[0]);
+        if ($.isArray(arguments[1])) {
+            for (var i = 0; i < arguments[1].length; i++) {
+                var value = arguments[1][i] ? arguments[1][i] : "";
+                str = str.replace(new RegExp("\\{" + i + "}", "gm"), value);
+            }
+        } else {
+            var data = $(arguments).slice(1, arguments.length);
+            for (var i = 0; i < data.length; i++) {
+                str = str.replace(new RegExp("\\{" + i + "}", "gm"), data[i]);
+            }
+        }
+        return str;
     }
 
     //创建GUID唯一标识
@@ -359,6 +382,7 @@
         //最新的HTML规范只有当页面中存在form时，submit(); 方法才会被激活
         document.body.appendChild(form);
         form.submit();
+        document.body.removeChild(form);
     }
 
     /**设置缓存
@@ -410,27 +434,31 @@
     }
 
 
+
     /********************************************************原生函数扩展********************************************************/
     //Start扩展字符串基元
     String.prototype.Equals = function (str) {
         return this === str;
     }
     String.prototype.format = function () {
-        var str = that.IsNullOrEmpty(arguments[0]) ? "" : String(arguments[0]);
-        if ($.isArray(arguments[1])) {
-            for (var i = 0; i < arguments[1].length; i++) {
-                var value = arguments[1][i] ? arguments[1][i] : "";
-                str = str.replace(new RegExp("\\{" + i + "}", "gm"), value);
-            }
-        } else {
-            var data = $(arguments).slice(1, arguments.length);
-            for (var i = 0; i < data.length; i++) {
-                str = str.replace(new RegExp("\\{" + i + "}", "gm"), data[i]);
-            }
-        }
-        return str;
+        that.Format.apply(this, arguments);
+    }
+    String.prototype.getBytes = function () {
+        return this.replace(/[^\x00-\xff]/g, "**").length;
     }
     //End扩展字符串基元
+
+    //Start扩展数组基元
+    //Array.prototype.contains = function (obj) {
+    //    var i = this.length;
+    //    while (i--) {
+    //        if (this[i] === obj) {
+    //            return true;
+    //        }
+    //    }
+    //    return false;
+    //}
+    //End扩展数组基元
 
     //Start扩展时间基元
     Date.prototype.ToString = function (format) {
