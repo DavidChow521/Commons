@@ -2,7 +2,7 @@
  * @AUTHOR:                     David Chow
  * @CREATEDATE:                 August 03st 2017.
  * @NAME:                       tools 1.0.0
- * @DESCRIPTION:                常用js工具类,命名规范符合驼峰式大小写格式
+ * @DESCRIPTION:                此工具 Sep 30st 2017 后不再更新，新版为Jsdk.js
  * @BLOG:                       http://blog.csdn.net/baidu_25382371
  * @License:                    You may use tools-js under the terms of the MIT License (SeeLICENSE).
  * -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -16,21 +16,19 @@
  */
 (function (global, factory) {
 
-    //初始化控件
-    factory.prototype.Init = function () {
         var
-            self = this,
+            self = new factory(),
 
            defaults = {
                //版本
-               tools: 'v1.2.2',
+               tools: 'v1.2.5',
                //开启调试
-               debug: false,
+               debug: true,
                //当前时间
                now: new Date()
            },
 
-           //声明函数
+            //声明函数(后面去掉)
            Methods = {
                //格式化基类
                Formatting: ["BackCardNo", "JsonDateTime", "MoneyRoundOff", "Chinese", "ChineseAmt", "TrimAll"],
@@ -42,6 +40,8 @@
                Brower: ["basic", "Request", "Submit", "SetCache", "GetCache", "RemoveCache", "ClearCache", "DownloadCanvas"],
 
            };
+
+    function _InitTools() {
         $.each(Methods, function (k, v) {
             defaults[k] = {};
             v.forEach(function (f, e) {
@@ -60,11 +60,10 @@
             console.log("%c tools初始化成功！", "color:#5EB0FA");
             console.log(defaults);
         }
-
-        return defaults;
+        global.tools = defaults;
     }
 
-    global.tools = new factory().Init();
+    _InitTools();
 }(this, function () {
     'use strict';
 
