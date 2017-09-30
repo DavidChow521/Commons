@@ -30,7 +30,7 @@
             methods = [
                 "backCardNo", "jsonDate", "moneyRoundOff", "chinese", "chineseAmt", "trimAll",
                 "isNullOrEmpty", "isNullOrWhiteSpace", "isEmail", "isZipCode", "isChinese", "isEnglish", "isExists",
-                "distinct", "format", "newGuid",
+                "distinct", "format", "newGuid", "ajax",
                 "basic", "request", "submit", "setCache", "getCache", "removeCache", "clearCache", "downloadCanvas"
             ];
         methods.forEach(function (f, e) {
@@ -57,6 +57,55 @@
     'use strict';
 
     var that = this;
+
+    //创建httpRequest请求
+    this.ajax = function (options) {
+        options = options || {};
+        options.type = (options.type || "POST").toUpperCase();
+        options.dataType = options.dataType || "json";
+        options.contenttype = options.contenttype || "application/json; charset=utf8";
+        options.data = formatParams(options.data) || {};
+
+        //创建 - 非IE6 - 第一步
+        if (window.XMLHttpRequest) {
+            var xhr = new XMLHttpRequest();
+        } else {
+            var xhr = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+
+        //连接 和 发送 - 第二步
+        if (options.type == "GET") {
+            xhr.open("GET", options.url + "?" + params, true);
+            xhr.send(null);
+        } else if (options.type == "POST") {
+            xhr.open("POST", options.url, true);
+            xhr.send(params);
+        }
+
+        xhr.open(options.type, options.url, options.async);
+
+        //接收 - 第三步
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState == 4) {
+                var status = xhr.status;
+                if (status >= 200 && status < 300) {
+                    options.success && options.success(xhr.responseText, xhr.responseXML);
+                } else {
+                    options.error && options.error(status);
+                }
+            }
+        }
+
+        //格式化参数
+        function formatParams(data) {
+            var arr = [];
+            for (var name in data) {
+                arr.push(encodeURIComponent(name) + "=" + encodeURIComponent(data[name]));
+            }
+            arr.push(("v=" + Math.random()).replace(".", ""));
+            return arr.join("&");
+        }
+    }
 
     /**
      *  格式化银行卡
