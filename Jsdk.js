@@ -12,7 +12,6 @@
  *[Sample Code]
  */
 (function (global, factory) {
-
     //初始化控件
     factory.prototype.Init = function () {
         var
@@ -53,6 +52,17 @@
     }
 
     global.Jsdk = new factory().Init();
+
+    if (typeof define === 'function' && define.amd) {
+        // AMD
+        define(['Jsdk'], factory);
+    } else if (typeof exports === 'object') {
+        // CommonJS
+        factory(require('Jsdk'));
+    } else {
+        // Browser globals
+        factory((typeof (Jsdk) != 'undefined') ? Jsdk : global.Jsdk);
+    }
 }(this, function () {
     'use strict';
 
