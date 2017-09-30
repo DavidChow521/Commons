@@ -28,10 +28,10 @@
             },
             //声明函数
             methods = [
-                "BackCardNo", "JsonDateTime", "MoneyRoundOff", "Chinese", "ChineseAmt", "TrimAll",
-                "IsNullOrEmpty", "IsNullOrWhiteSpace", "IsEmail", "IsZipCode", "IsChinese", "IsEnglish", "IsExists",
-                "Distinct", "Format", "NewGuid",
-                "basic", "Request", "Submit", "SetCache", "GetCache", "RemoveCache", "ClearCache", "DownloadCanvas"
+                "backCardNo", "jsonDate", "moneyRoundOff", "chinese", "chineseAmt", "trimAll",
+                "isNullOrEmpty", "isNullOrWhiteSpace", "isEmail", "isZipCode", "isChinese", "isEnglish", "isExists",
+                "distinct", "format", "newGuid",
+                "basic", "request", "submit", "setCache", "getCache", "removeCache", "clearCache", "downloadCanvas"
             ];
         methods.forEach(function (f, e) {
             defaults[f] = function () {
@@ -45,7 +45,7 @@
 
         //调试日志
         if (defaults.debug) {
-            console.log("%c Japi初始化成功！", "color:#5EB0FA");
+            console.log("%c Jsdk初始化成功！", "color:#5EB0FA");
             console.log(defaults);
         }
 
