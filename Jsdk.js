@@ -1,7 +1,7 @@
 /**
  * @AUTHOR:                     David Chow
  * @CREATEDATE:                 August 03st 2017.
- * @NAME:                       Jsdk v1.2.5
+ * @NAME:                       Jsdk v1.3.5
  * @DESCRIPTION:                常用js工具类,命名规范符合驼峰式大小写格式
  * @BLOG:                       http://blog.csdn.net/baidu_25382371
  * @License:                    You may use Jsdk-js under the terms of the MIT License (SeeLICENSE).
@@ -20,7 +20,7 @@
 
             defaults = {
                 //版本
-                Jsdk: 'v1.2.5',
+                Jsdk: 'v1.3.5',
                 //开启调试
                 debug: true,
                 //当前时间
