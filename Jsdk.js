@@ -71,10 +71,15 @@
     //创建httpRequest请求
     this.ajax = function (options) {
         options = options || {};
+        options.async = options.async || true;
         options.type = (options.type || "POST").toUpperCase();
         options.dataType = options.dataType || "json";
         options.contenttype = options.contenttype || "application/json; charset=utf8";
-        options.data = formatParams(options.data) || {};
+        options.data = options.data || null;
+        var params = null;
+        if (options.data != undefined && options.data != null && options.data != "") {
+            params = formatParams(options.data)
+        }
 
         //创建 - 非IE6 - 第一步
         if (window.XMLHttpRequest) {
@@ -85,21 +90,21 @@
 
         //连接 和 发送 - 第二步
         if (options.type == "GET") {
-            xhr.open("GET", options.url + "?" + params, true);
+            xhr.open("GET", options.url + "?" + params, options.async);
             xhr.send(null);
         } else if (options.type == "POST") {
-            xhr.open("POST", options.url, true);
+            xhr.open("POST", options.url, options.async);
+            // 添加http头，发送信息至服务器时内容编码类型
+            xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");  
             xhr.send(params);
         }
-
-        xhr.open(options.type, options.url, options.async);
 
         //接收 - 第三步
         xhr.onreadystatechange = function () {
             if (xhr.readyState == 4) {
                 var status = xhr.status;
                 if (status >= 200 && status < 300) {
-                    options.success && options.success(xhr.responseText, xhr.responseXML);
+                    options.success && options.success(parseJSON(xhr.response), xhr);
                 } else {
                     options.error && options.error(status);
                 }
@@ -114,6 +119,31 @@
             }
             arr.push(("v=" + Math.random()).replace(".", ""));
             return arr.join("&");
+        }
+
+        function parseJSON(data) {
+            if (typeof data !== "string" || !data) {
+                return null;
+            }
+
+            //去除首尾空格
+            data = String(data).trim();
+
+            // 使用本地自带JSON解析
+            if (window.JSON && window.JSON.parse) {
+                return window.JSON.parse(data);
+            }
+
+            //确保数据为JSON 格式
+            // Logic borrowed from http://json.org/json2.js
+            if (/^[\],:{}\s]*$/.test(data.replace(/\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g, "@")
+                    .replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, "]")
+                    .replace(/(?:^|:|,)(?:\s*\[)+/g, ""))) {
+
+                return (new Function("return " + data))();
+
+            }
+            console.error("Invalid Jsdk: " + data);
         }
     }
 
@@ -135,7 +165,7 @@
             if ($.isNumeric(index))
                 i = index;
         }
-        if (typeof (replacing) !== undefined && trim(replacing) !== "")
+        if (typeof (replacing) !== undefined && String(replacing).trim() !== "")
             r = replacing;
         eval("var regex = /(\\d{" + i + "})(?=\\d)/g");
         return cardno.replace(/[\s]/g, '').replace(regex, "$1" + r);
@@ -156,7 +186,7 @@
     this.jsonDate = function (date, replacing, showtime) {
         var r = "-",
             s = true;
-        if (typeof (replacing) !== undefined && $.trim(replacing) !== "")
+        if (typeof (replacing) !== undefined && String(replacing).trim() !== "")
             r = replacing;
         if (typeof (showtime) !== undefined && typeof (showtime) === "boolean")
             s = showtime;
@@ -255,7 +285,7 @@
     //去除首尾中间空白字符(参数,中间空格)
     this.trimAll = function (value, center) {
         var c = true,
-            value = $.trim(value);
+            value = String(value).trim();
         if (!that.isNullOrEmpty(center))
             c = center;
         if (c) {
