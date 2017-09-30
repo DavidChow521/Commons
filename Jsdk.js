@@ -58,10 +58,7 @@
         define(['Jsdk'], factory);
     } else if (typeof exports === 'object') {
         // CommonJS
-        factory(require('Jsdk'));
-    } else {
-        // Browser globals
-        factory((typeof (Jsdk) != 'undefined') ? Jsdk : global.Jsdk);
+        require('Jsdk');
     }
 }(this, function () {
     'use strict';
