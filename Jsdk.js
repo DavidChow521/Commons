@@ -92,7 +92,7 @@
         } else if (options.type == "POST") {
             xhr.open("POST", options.url, options.async);
             // 添加http头，发送信息至服务器时内容编码类型
-            xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");  
+            xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
             xhr.send(params);
         }
 
@@ -162,7 +162,7 @@
             if ($.isNumeric(index))
                 i = index;
         }
-        if (typeof (replacing) !== undefined && String(replacing).trim() !== "")
+        if (typeof (replacing) !== undefined && !that.isNullOrEmpty(replacing))
             r = replacing;
         eval("var regex = /(\\d{" + i + "})(?=\\d)/g");
         return cardno.replace(/[\s]/g, '').replace(regex, "$1" + r);
@@ -294,7 +294,7 @@
 
     //判断传入的字符串是否为Null或者为空字符串。
     this.isNullOrEmpty = function (value) {
-        return value === undefined || value === null || value === "";
+        return value === undefined || value === null || value.trim() === "" || typeof(value) === undefined;
     };
 
     //判断传入的字符串是否为Null或者为空字符串或者全是空格。
