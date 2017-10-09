@@ -12,6 +12,7 @@
  *[Sample Code]
  */
 (function (global, factory) {
+
     //初始化控件
     factory.prototype.Init = function () {
         var
@@ -64,85 +65,6 @@
     'use strict';
 
     var that = this;
-
-    //创建httpRequest请求
-    this.ajax = function (options) {
-        options = options || {};
-        options.async = options.async || true;
-        options.type = (options.type || "POST").toUpperCase();
-        options.dataType = options.dataType || "json";
-        options.contenttype = options.contenttype || "application/json; charset=utf8";
-        options.data = options.data || null;
-        var params = null;
-        if (options.data != undefined && options.data != null && options.data != "") {
-            params = formatParams(options.data)
-        }
-
-        //创建 - 非IE6 - 第一步
-        if (window.XMLHttpRequest) {
-            var xhr = new XMLHttpRequest();
-        } else {
-            var xhr = new ActiveXObject("Microsoft.XMLHTTP");
-        }
-
-        //连接 和 发送 - 第二步
-        if (options.type == "GET") {
-            xhr.open("GET", options.url + "?" + params, options.async);
-            xhr.send(null);
-        } else if (options.type == "POST") {
-            xhr.open("POST", options.url, options.async);
-            // 添加http头，发送信息至服务器时内容编码类型
-            xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-            xhr.send(params);
-        }
-
-        //接收 - 第三步
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState == 4) {
-                var status = xhr.status;
-                if (status >= 200 && status < 300) {
-                    options.success && options.success(parseJSON(xhr.response), xhr);
-                } else {
-                    options.error && options.error(status);
-                }
-            }
-        }
-
-        //格式化参数
-        function formatParams(data) {
-            var arr = [];
-            for (var name in data) {
-                arr.push(encodeURIComponent(name) + "=" + encodeURIComponent(data[name]));
-            }
-            arr.push(("v=" + Math.random()).replace(".", ""));
-            return arr.join("&");
-        }
-
-        function parseJSON(data) {
-            if (typeof data !== "string" || !data) {
-                return null;
-            }
-
-            //去除首尾空格
-            data = String(data).trim();
-
-            // 使用本地自带JSON解析
-            if (window.JSON && window.JSON.parse) {
-                return window.JSON.parse(data);
-            }
-
-            //确保数据为JSON 格式
-            // Logic borrowed from http://json.org/json2.js
-            if (/^[\],:{}\s]*$/.test(data.replace(/\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g, "@")
-                    .replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, "]")
-                    .replace(/(?:^|:|,)(?:\s*\[)+/g, ""))) {
-
-                return (new Function("return " + data))();
-
-            }
-            console.error("Invalid Jsdk: " + data);
-        }
-    }
 
     /**
      *  格式化银行卡
@@ -526,6 +448,85 @@
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
+    }
+
+    //创建httpRequest请求
+    this.ajax = function (options) {
+        options = options || {};
+        options.async = options.async || true;
+        options.type = (options.type || "POST").toUpperCase();
+        options.dataType = options.dataType || "json";
+        options.contenttype = options.contenttype || "application/json; charset=utf8";
+        options.data = options.data || null;
+        var params = null;
+        if (options.data != undefined && options.data != null && options.data != "") {
+            params = formatParams(options.data)
+        }
+
+        //创建 - 非IE6 - 第一步
+        if (window.XMLHttpRequest) {
+            var xhr = new XMLHttpRequest();
+        } else {
+            var xhr = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+
+        //连接 和 发送 - 第二步
+        if (options.type == "GET") {
+            xhr.open("GET", options.url + "?" + params, options.async);
+            xhr.send(null);
+        } else if (options.type == "POST") {
+            xhr.open("POST", options.url, options.async);
+            // 添加http头，发送信息至服务器时内容编码类型
+            xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            xhr.send(params);
+        }
+
+        //接收 - 第三步
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState == 4) {
+                var status = xhr.status;
+                if (status >= 200 && status < 300) {
+                    options.success && options.success(parseJSON(xhr.response), xhr);
+                } else {
+                    options.error && options.error(status);
+                }
+            }
+        }
+
+        //格式化参数
+        function formatParams(data) {
+            var arr = [];
+            for (var name in data) {
+                arr.push(encodeURIComponent(name) + "=" + encodeURIComponent(data[name]));
+            }
+            arr.push(("v=" + Math.random()).replace(".", ""));
+            return arr.join("&");
+        }
+
+        function parseJSON(data) {
+            if (typeof data !== "string" || !data) {
+                return null;
+            }
+
+            //去除首尾空格
+            data = String(data).trim();
+
+            // 使用本地自带JSON解析
+            if (window.JSON && window.JSON.parse) {
+                return window.JSON.parse(data);
+            }
+
+            //确保数据为JSON 格式
+            // Logic borrowed from http://json.org/json2.js
+            if (/^[\],:{}\s]*$/.test(data.replace(/\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g, "@")
+                    .replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, "]")
+                    .replace(/(?:^|:|,)(?:\s*\[)+/g, ""))) {
+
+                return (new Function("return " + data))();
+
+            }
+            console.error("Invalid Jsdk: " + data);
+        }
     }
 
 
