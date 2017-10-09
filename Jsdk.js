@@ -51,7 +51,7 @@
         return defaults;
     }
 
-    global.Jsdk = new factory().Init();
+    global.Jsdk = new factory().Init() || {};
 
     if (typeof define === 'function' && define.amd) {
         // AMD
@@ -151,9 +151,9 @@
      *  @index  分割数
      *  @return  字符串
      *  @samplecode
-     *    1.tools.Formatting.BackCardNo('17072615244558938683') return '1707 2615 2445 5893 8683'
-     *    2.tools.Formatting.BackCardNo('17072615244558938683','-') return '1707-2615-2445-5893-8683'
-     *    3.tools.Formatting.BackCardNo('17072615244558938683',',',3) return '170,726,152,445,589,386,83'
+     *    1.Jsdk.backCardNo('17072615244558938683') return '1707 2615 2445 5893 8683'
+     *    2.Jsdk.backCardNo('17072615244558938683','-') return '1707-2615-2445-5893-8683'
+     *    3.Jsdk.backCardNo('17072615244558938683',',',3) return '170,726,152,445,589,386,83'
      **/
     this.backCardNo = function (cardno, replacing, index) {
         var i = 4,
@@ -176,9 +176,9 @@
      *   @showtime  是否显示时间
      *   @return 正确的日期
      *   @samplecode
-     *     1.tools.Formatting.JsonDateTime("/Date(1405056837780)/") return 2014-07-11 13:33:57
-     *     2.tools.Formatting.JsonDateTime("/Date(1405056837780)/","/") return 2014/07/11 13:33:57
-     *     3.tools.Formatting.JsonDateTime("/Date(1405056837780)/","/",false) return 2014/07/11
+     *     1.Jsdk.jsonDate("/Date(1405056837780)/") return 2014-07-11 13:33:57
+     *     2.Jsdk.jsonDate("/Date(1405056837780)/","/") return 2014/07/11 13:33:57
+     *     3.Jsdk.jsonDate("/Date(1405056837780)/","/",false) return 2014/07/11
      */
     this.jsonDate = function (date, replacing, showtime) {
         var r = "-",
@@ -368,7 +368,7 @@
      *   类似于 .NET 中的 string.Format 函数功能
      *   @teturn 字符串
      *   @samplecode
-     *   tools.String.Format("{0},Hello World ！","小明")
+     *   Jsdk.Format("{0},Hello World ！","小明")
      **/
     this.format = function () {
         var str = that.isNullOrEmpty(arguments[0]) ? "" : String(arguments[0]);
@@ -428,7 +428,7 @@
      *  @key 取值参数
      *  @return 值
      *  @samplecode
-     *    tools.Brower.Request("key")
+     *    Jsdk.Request("key")
      */
     this.request = function (key) {
         var regexp = new RegExp("(^|&)" + key + "=([^&]*)(&|$)", "i");
@@ -444,25 +444,25 @@
      *  @object  对象参数
      *  @return  <form>标签对象
      *  @samplecode
-     *  tools.Brower.Submit("/Controller/Action",{
+     *  Jsdk.submit("/Controller/Action",{
 	 *      Name:'小明',Age:18,Sex:1
      *  });
      **/
     this.submit = function (action, object) {
-        var form = document.forms["_tools.Submit_"];
+        var form = document.forms["_JSDK.SUBMIT_"];
         //这样处理可以减少<form>冗余
         if (form) {
             form.innerHTML = "";
         } else {
             //创建表单
             form = document.createElement("form");
-            form.name = "_tools.Submit_";
+            form.name = "_JSDK.SUBMIT_";
             form.style = "display:none";
             form.method = "post"
             form.target = "_blank";
         }
 
-        form.id = that.format("_Submit_{0}", new Date().getTime());
+        form.id = that.format("_SUBMIT_{0}", new Date().getTime());
         form.action = action;
 
         //创建参数
@@ -477,7 +477,7 @@
         //最新的HTML规范只有当页面中存在form时，submit(); 方法才会被激活
         document.body.appendChild(form);
         form.submit();
-        document.body.removeChild(form);
+        //document.body.removeChild(form);
     }
 
     /**设置缓存
@@ -512,7 +512,7 @@
         //声明保存类型
         var img = "image/png",
             //图片名称
-            name = that.NewGuid(),
+            name = that.newGuid(),
             //创建a标签元素
             a = document.createElement('a');
         if (!that.isNullOrEmpty(filename)) {
