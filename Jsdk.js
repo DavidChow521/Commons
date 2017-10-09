@@ -309,12 +309,14 @@
     }
 
     //创建GUID唯一标识
-    this.newGuid = function () {
-        function S4() {
-            return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
+    this.newGuid = function (len) {
+        len = len || 32;
+        var guid = "";
+        for (var i = 1; i <= len; i++) {
+            var n = Math.floor(Math.random() * 16.0).toString(16);
+            guid += n;
         }
-
-        return (S4() + S4() + S4() + S4() + S4() + S4() + S4() + S4());
+        return guid;
     };
 
     //  获取浏览器的名称以及版本号。
