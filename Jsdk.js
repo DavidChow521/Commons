@@ -536,7 +536,7 @@
 
 }))
 
-Jsdk = (function () {
+_Jsdk = (function () {
     var Jsdk = function () {
         //版本
         this.vsrsion = '1.3.5';
