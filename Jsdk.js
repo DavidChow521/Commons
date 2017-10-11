@@ -12,47 +12,48 @@
  *[Sample Code]
  */
 (function (global, factory) {
+    var
 
-    //初始化控件
-    factory.prototype.Init = function () {
-        var
-            self = this,
+        defaults = {
+            //版本
+            vsrsion: '1.3.5',
+            //开启调试
+            debug: true,
+            //当前时间
+            now: new Date()
+        },
+        //声明函数
+        methods = [
+            "backCardNo", "jsonDate", "moneyRoundOff", "chinese", "chineseAmt", "trimAll",
+            "isNullOrEmpty", "isNullOrWhiteSpace", "isEmail", "isZipCode", "isChinese", "isEnglish", "isExists",
+            "distinct", "format", "newGuid", "ajax",
+            "basic", "request", "submit", "setCache", "getCache", "removeCache", "clearCache", "downloadCanvas"
+        ];
+    factory.prototype = {
+        //初始化控件
+        Init: function () {
+            var self = this;
+            methods.forEach(function (f, e) {
+                defaults[f] = function () {
+                    return call(this, f, arguments);
+                    //return eval("self."+f).apply(defaults[f], arguments);
+                };
+            })
+            function call(that, fn, args) {
+                return eval("self." + fn).apply(that, args);
+            }
 
-            defaults = {
-                //版本
-                Jsdk: 'v1.3.5',
-                //开启调试
-                debug: true,
-                //当前时间
-                now: new Date()
-            },
-            //声明函数
-            methods = [
-                "backCardNo", "jsonDate", "moneyRoundOff", "chinese", "chineseAmt", "trimAll",
-                "isNullOrEmpty", "isNullOrWhiteSpace", "isEmail", "isZipCode", "isChinese", "isEnglish", "isExists",
-                "distinct", "format", "newGuid", "ajax",
-                "basic", "request", "submit", "setCache", "getCache", "removeCache", "clearCache", "downloadCanvas"
-            ];
-        methods.forEach(function (f, e) {
-            defaults[f] = function () {
-                return call(this, f, arguments);
-                //return eval("self."+f).apply(defaults[f], arguments);
-            };
-        })
-        function call(that, fn, args) {
-            return eval("self." + fn).apply(that, args);
+            //调试日志
+            if (defaults.debug) {
+                console.log(defaults);
+                console.log("%c Jsdk初始化成功！", "color:#5EB0FA");
+            }
+
+            return defaults || {};
         }
-
-        //调试日志
-        if (defaults.debug) {
-            console.log("%c Jsdk初始化成功！", "color:#5EB0FA");
-            console.log(defaults);
-        }
-
-        return defaults;
     }
 
-    global.Jsdk = new factory().Init() || {};
+    global.Jsdk = new factory().Init();
 
     if (typeof define === 'function' && define.amd) {
         // AMD
@@ -87,6 +88,7 @@
         if (typeof (replacing) !== undefined && !that.isNullOrEmpty(replacing))
             r = replacing;
         eval("var regex = /(\\d{" + i + "})(?=\\d)/g");
+        var regex = /(\\d{" + i + "})(?=\\d)/g;
         return cardno.replace(/[\s]/g, '').replace(regex, "$1" + r);
     }
 
@@ -216,7 +218,7 @@
 
     //判断传入的字符串是否为Null或者为空字符串。
     this.isNullOrEmpty = function (value) {
-        return value === undefined || value === null || value.trim() === "" || typeof(value) === undefined;
+        return value === undefined || value === null || value.trim() === "" || typeof (value) === undefined;
     };
 
     //判断传入的字符串是否为Null或者为空字符串或者全是空格。
@@ -532,85 +534,84 @@
     }
 
 
-    /********************************************************原生函数扩展********************************************************/
-    //Start扩展字符串基元
-    String.prototype.Equals = function (str) {
-        return this === str;
-    }
-    String.prototype.format = function () {
-        that.format.apply(this, arguments);
-    }
-    String.prototype.getBytes = function () {
-        return this.replace(/[^\x00-\xff]/g, "**").length;
-    }
-    //End扩展字符串基元
-
-    //Start扩展数组基元
-    Array.prototype.contains = function (obj) {
-        var i = this.length;
-        while (i--) {
-            if (this[i] === obj) {
-                return true;
-            }
-        }
-        return false;
-    }
-    //End扩展数组基元
-
-    //Start扩展时间基元
-    Date.prototype.ToString = function (format) {
-        var date = {
-            "M+": this.getMonth() + 1,
-            "d+": this.getDate(),
-            "h+": this.getHours(),
-            "m+": this.getMinutes(),
-            "s+": this.getSeconds(),
-            "q+": Math.floor((this.getMonth() + 3) / 3),
-            "S+": this.getMilliseconds()
-        };
-        if (/(y+)/i.test(format)) {
-            format = format.replace(RegExp.$1, (this.getFullYear() + '').substr(4 - RegExp.$1.length));
-        }
-        for (var k in date) {
-            if (new RegExp("(" + k + ")").test(format)) {
-                format = format.replace(RegExp.$1, RegExp.$1.length == 1
-                    ? date[k] : ("00" + date[k]).substr(("" + date[k]).length));
-            }
-        }
-        return format;
-    };
-    Date.prototype.Equals = function (date) {
-        return Date.parse(this) == Date.parse(date);
-    }
-    Date.prototype.addYears = function (year) {
-        this.setFullYear(this.getFullYear() + year)
-        return this;
-    }
-    Date.prototype.addMonths = function (month) {
-        this.setMonth(this.getMonth() + month)
-        return this;
-    }
-    Date.prototype.addDays = function (day) {
-        this.setDate(this.getDate() + day)
-        return this;
-    }
-    Date.prototype.addHours = function (hour) {
-        this.setHours(this.getHours() + hour)
-        return this;
-    }
-    Date.prototype.addMinutes = function (minute) {
-        this.setMinutes(this.getMinutes() + minute)
-        return this;
-    }
-    Date.prototype.getLastDay = function () {
-        return new Date(new Date(this.getYear(), this.getMonth() + 1, 1).getTime() - 1000 * 60 * 60 * 24).getDate();
-    }
-    Date.prototype.getWeekFirstDay = function () {
-        return new Date(new Date(this.getFullYear(), this.getMonth(), this.getDate() - this.getDay())).getDate();
-    }
-    Date.prototype.getWeekFirstDate = function () {
-        return new Date(new Date(this.getFullYear(), this.getMonth(), this.getDate() - this.getDay()));
-    }
-    //End扩展时间基元
-
 }))
+
+
+/********************************************************原生函数扩展********************************************************/
+
+String.prototype.Equals = function (str) {
+    return this === str;
+}
+String.prototype.format = function () {
+    that.format.apply(this, arguments);
+}
+String.prototype.getBytes = function () {
+    return this.replace(/[^\x00-\xff]/g, "**").length;
+}
+Array.prototype.contains = function (obj) {
+    var i = this.length;
+    while (i--) {
+        if (this[i] === obj) {
+            return true;
+        }
+    }
+    return false;
+}
+Date.prototype.ToString = function (format) {
+    var date = {
+        "M+": this.getMonth() + 1,
+        "d+": this.getDate(),
+        "h+": this.getHours(),
+        "m+": this.getMinutes(),
+        "s+": this.getSeconds(),
+        "q+": Math.floor((this.getMonth() + 3) / 3),
+        "S+": this.getMilliseconds()
+    };
+    if (/(y+)/i.test(format)) {
+        format = format.replace(RegExp.$1, (this.getFullYear() + '').substr(4 - RegExp.$1.length));
+    }
+    for (var k in date) {
+        if (new RegExp("(" + k + ")").test(format)) {
+            format = format.replace(RegExp.$1, RegExp.$1.length == 1
+                ? date[k] : ("00" + date[k]).substr(("" + date[k]).length));
+        }
+    }
+    return format;
+};
+Date.prototype.Equals = function (date) {
+    return Date.parse(this) == Date.parse(date);
+}
+Date.prototype.addYears = function (year) {
+    this.setFullYear(this.getFullYear() + year)
+    return this;
+}
+Date.prototype.addMonths = function (month) {
+    this.setMonth(this.getMonth() + month)
+    return this;
+}
+Date.prototype.addDays = function (day) {
+    this.setDate(this.getDate() + day)
+    return this;
+}
+Date.prototype.addHours = function (hour) {
+    this.setHours(this.getHours() + hour)
+    return this;
+}
+Date.prototype.addMinutes = function (minute) {
+    this.setMinutes(this.getMinutes() + minute)
+    return this;
+}
+Date.prototype.getLastDay = function () {
+    return new Date(new Date(this.getYear(), this.getMonth() + 1, 1).getTime() - 1000 * 60 * 60 * 24).getDate();
+}
+Date.prototype.getWeekFirstDay = function () {
+    return new Date(new Date(this.getFullYear(), this.getMonth(), this.getDate() - this.getDay())).getDate();
+}
+Date.prototype.getWeekFirstDate = function () {
+    return new Date(new Date(this.getFullYear(), this.getMonth(), this.getDate() - this.getDay()));
+}
+
+
+/********************************************************原生函数扩展********************************************************/
+
+
