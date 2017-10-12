@@ -556,6 +556,7 @@
 //}
 //A.$.fn.init.prototype = A.$.fn;
 
+//类似.NET 拉姆达表达式
 this.Jsdk.Lambda = (function () {
     var Lambda = function () {
         this.getData = arguments[0];
