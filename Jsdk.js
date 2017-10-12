@@ -25,44 +25,24 @@
         methods = [
             "backCardNo", "jsonDate", "moneyRoundOff", "chinese", "chineseAmt", "trimAll",
             "isNullOrEmpty", "isNullOrWhiteSpace", "isEmail", "isZipCode", "isChinese", "isEnglish", "isExists",
-            "distinct", "format", "newGuid", "ajax",
+            "distinct", "format", "newGuid", "ajax", "getById",
             "basic", "request", "submit", "setCache", "getCache", "removeCache", "clearCache", "downloadCanvas"
         ];
     factory.$ = function () {
-        return factory.$.fn.init();
-        //return new factory.fn.init();
+        return new factory.$.fn.init();
     };
-    //factory.prototype.init = function () {
-    //    var self =this;
-    //    methods.forEach(function (f, e) {
-    //        defaults[f] = function () {
-    //            return call(this, f, arguments);
-    //            //return eval("self."+f).apply(defaults[f], arguments);
-    //        };
-    //    })
-    //    function call(that, fn, args) {
-    //        return eval("self." + fn).apply(that, args);
-    //    }
 
-    //    //调试日志
-    //    if (defaults.debug) {
-    //        console.log(defaults);
-    //        console.log("%c Jsdk初始化成功！", "color:#5EB0FA");
-    //    }
-
-    //    return defaults;
-    //}
     factory.$.fn = factory.prototype = {
         init: function () {
             var self = new factory();
             methods.forEach(function (f, e) {
                 defaults[f] = function () {
-                    return call(this, f, arguments);
+                    return fn(this, f, arguments);
                     //return eval("self."+f).apply(defaults[f], arguments);
                 };
             })
-            function call(that, fn, args) {
-                return eval("self." + fn).apply(that, args);
+            function fn(that, f, args) {
+                return eval("self." + f).apply(that, args);
             }
 
             //调试日志
@@ -555,6 +535,9 @@
         }
     }
 
+    this.getById = function (id) {
+        return document.getElementById(id);
+    }
 
 }))
 
