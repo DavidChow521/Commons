@@ -10,6 +10,21 @@
  *[Depend On]
  * JQuery v1.11.0+
  *[Sample Code]
+ function A() {
+            this.set = function () {
+                return 1;
+            }
+        }
+ A.$ = function () {
+            return new A.$.fn.init().Gloabl;
+        }
+ A.$.fn = A.protetype = {
+            init: function () {
+                console.log('初始化成功!')
+            },
+            Gloabl:1
+        }
+ A.$.fn.init.prototype = A.$.fn;
  */
 (function (global, factory) {
     var
@@ -540,21 +555,6 @@
 
 }))
 
-//function A() {
-//    this.set = function () {
-//        return 1;
-//    }
-//}
-//A.$ = function () {
-//    return new A.$.fn.init().Gloabl;
-//}
-//A.$.fn = A.protetype = {
-//    init: function () {
-//        console.log('初始化成功!')
-//    },
-//    Gloabl:1
-//}
-//A.$.fn.init.prototype = A.$.fn;
 
 //类似.NET 拉姆达表达式
 this.Jsdk.Lambda = (function () {
