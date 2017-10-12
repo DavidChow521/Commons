@@ -26,6 +26,7 @@
         }
  A.$.fn.init.prototype = A.$.fn;
  */
+
 (function (global, factory) {
     var
         defaults = {
