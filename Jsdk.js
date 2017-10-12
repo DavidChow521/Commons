@@ -52,8 +52,7 @@
             }
 
             return defaults;
-        }
-
+        },
     };
 
     global.Jsdk = global.Jsdk || factory.$();
@@ -541,8 +540,208 @@
 
 }))
 
-Lambda = (function () {
+//function A() {
+//    this.set = function () {
+//        return 1;
+//    }
+//}
+//A.$ = function () {
+//    return new A.$.fn.init().Gloabl;
+//}
+//A.$.fn = A.protetype = {
+//    init: function () {
+//        console.log('初始化成功!')
+//    },
+//    Gloabl:1
+//}
+//A.$.fn.init.prototype = A.$.fn;
 
+this.Jsdk.Lambda = (function () {
+    var Lambda = function () {
+        this.getData = arguments[0];
+    }
+    Lambda.from = function () {
+        var newArray = new Array();
+        for (var i = 0; i < arguments[0].length; i++) {
+            newArray[i] = arguments[0][i];
+        }
+        return new Lambda(newArray);
+    }
+    Lambda.prototype = {
+        select: function (predicate) {
+            var newArray = new Array();
+            for (var i = 0; i < this.getData.length; i++) {
+                var item = this.getData[i];
+                item = predicate(item, i);
+                newArray.push(item);
+            }
+            return new Lambda(newArray);
+        },
+        where: function (predicate) {
+            var newArray = new Array();
+            for (var i = 0; i < this.getData.length; i++) {
+                var item = this.getData[i];
+                var success = predicate(item, i);
+                if (success) {
+                    newArray.push(item);
+                }
+            }
+            return new Lambda(newArray);
+        },
+        sum: function (predicate) {
+            var result = 0;
+            for (var i = 0; i < this.getData.length; i++) {
+                var item = this.getData[i];
+                if (predicate != null)
+                    item = predicate(item);
+                result += item;
+                //170828-604974 ：418.7000000000007 -418.7 =  7.389644451905042e-13
+                result = Math.round(result * 10000) / 10000;
+            }
+            return result;
+        },
+        toArray: function () {
+            return this.getData;
+        },
+        foreach: function (predicate) {
+            for (var i = 0; i < this.getData.length; i++) {
+                var item = this.getData[i];
+                predicate(item, i);
+            }
+        },
+        contains: function (inputobj) {
+            if (inputobj == null)
+                return false;
+            var predicate = function (item) {
+                return item === inputobj;
+            };
+            if (inputobj instanceof Function)
+                predicate = inputobj;
+            for (var i = 0; i < this.getData.length; i++) {
+                var item = this.getData[i];
+                if (predicate(item))
+                    return true;
+            }
+            return false;
+        },
+        concat: function (array) {
+            var inputItemLambda = new Lambda(array);
+            var newArray = new Array();
+            this.Foreach(function (item) {
+                newArray.push(item);
+            });
+            inputItemLambda.Foreach(function (item) {
+                newArray.push(item);
+            });
+            return new Lambda(newArray);
+        },
+        orderBy: function (sortfunc) {
+            var result = new Lambda(this.getData);
+            QuickSort(result.getData, "<", sortfunc);
+            return result;
+        },
+        orderByDesc: function (sortfunc) {
+            var result = new Lambda(this.getData);
+            QuickSort(result.getData, ">", sortfunc);
+            return result;
+        },
+        skip: function (count) {
+            if (typeof count != "number")
+                throw "count必须是数字";
+            var skipCount = parseInt(count, 10);
+            var newArray = new Array();
+            for (var i = count; i < this.getData.length; i++) {
+                newArray.push(this.getData[i]);
+            }
+            return new Lambda(newArray);
+        },
+        take: function (count) {
+            if (typeof count != "number")
+                throw "count必须是数字";
+            var skipCount = parseInt(count, 10);
+            var newArray = new Array();
+            var length = count > this.getData.length ? this.getData.length : count;
+            for (var i = 0; i < count; i++) {
+                newArray.push(this.getData[i]);
+            }
+            return new Lambda(newArray);
+        },
+        firstOrDefault: function (predicate) {
+            if (predicate == null)
+                return this.getData[0];
+            for (var i = 0; i < this.getData.length; i++) {
+                var item = this.getData[i];
+                var success = predicate(item, i);
+                if (success)
+                    return item;
+            }
+        },
+        count: function () {
+            return this.getData.length;
+        },
+        indexOf: function (predicate) {
+            for (var i = 0; i < this.getData.length; i++) {
+                var item = this.getData[i];
+                if (typeof (predicate) == "function") {
+                    if (predicate(item)) {
+                        return i;
+                    }
+                }
+                else {
+                    if (item == predicate) {
+                        return i;
+                    }
+                }
+            }
+        },
+        join: function (splitString) {
+            var result = "";
+            if (this.getData.length <= 0)
+                return result;
+            for (var i = 0; i < this.getData.length; i++) {
+                result += this.getData[i];
+                if (i + 1 != this.getData.length)
+                    result += splitString;
+            }
+            return result;
+        }
+    }
+    function QuickSort(data, operating, func) {
+        if (func == null) {
+            func = function (item) {
+                return item
+            };
+        }
+        var _innerSort = function (data, left, right) {
+            var baseNumber = func(data[left]);
+            while (left < right) {
+                for (; left < right; right--) {
+                    if (eval(func(data[right]) + operating + baseNumber)) {
+                        data[left] = data[right];
+                        break;
+                    }
+                }
+                for (; left < right; left++) {
+                    if (eval(func(data[left]) + (operating == ">" ? "<" : ">") + baseNumber)) {
+                        data[right] = data[left];
+                        break;
+                    }
+                }
+            }
+            data[left] = baseNumber;
+            return left;
+        }
+        var _sort = function (data, left, right) {
+            if (left < right) {
+                var middle = _innerSort(data, left, right);
+                _sort(data, left, middle);
+                _sort(data, middle + 1, right);
+            }
+        };
+        _sort(data, 0, data.length - 1);
+    }
+
+    return Lambda;
 })()
 
 /********************************************************原生函数扩展********************************************************/
