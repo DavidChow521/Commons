@@ -565,7 +565,6 @@ this.Jsdk.loader = function () {
         script.src = url;
         return script;
     }
-
     function createLink(url) {
         var link = document.createElement("link");
         link.rel = "stylesheet";
@@ -573,7 +572,6 @@ this.Jsdk.loader = function () {
         link.href = url;
         return link;
     }
-
     function appendToHead(el) {
         var head = document.getElementsByTagName("head")[0];
         head.appendChild(el);
