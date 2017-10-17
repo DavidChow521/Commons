@@ -10,21 +10,6 @@
  *[Depend On]
  * JQuery v1.11.0+
  *[Sample Code]
- function A() {
-            this.set = function () {
-                return 1;
-            }
-        }
- A.$ = function () {
-            return new A.$.fn.init().Gloabl;
-        }
- A.$.fn = A.protetype = {
-            init: function () {
-                console.log('初始化成功!')
-            },
-            Gloabl:1
-        }
- A.$.fn.init.prototype = A.$.fn;
  */
 
 (function (global, factory) {
@@ -41,7 +26,7 @@
         methods = [
             "backCardNo", "jsonDate", "moneyRoundOff", "chinese", "chineseAmt", "trimAll",
             "isNullOrEmpty", "isNullOrWhiteSpace", "isEmail", "isZipCode", "isChinese", "isEnglish", "isExists",
-            "distinct", "format", "newGuid", "ajax", "getById",
+            "distinct", "format", "newGuid", "ajax", "getById", "createScript", "createLink",
             "basic", "request", "submit", "setCache", "getCache", "removeCache", "clearCache", "downloadCanvas"
         ];
     factory.$ = function () {
@@ -554,8 +539,131 @@
         return document.getElementById(id);
     }
 
+    this.createScript = function (url) {
+        var script = document.createElement("script");
+        script.type = "text/javascript";
+        script.src = url;
+        return script;
+    }
+
+    this.createLink = function (url) {
+        var link = document.createElement("link");
+        link.rel = "stylesheet";
+        link.type = "text/css";
+        link.href = url;
+        return link;
+    }
+
 }))
 
+
+//动态加载CSS/JS
+this.Jsdk.loader = function () {
+    function createScript(url) {
+        var script = document.createElement("script");
+        script.type = "text/javascript";
+        script.src = url;
+        return script;
+    }
+
+    function createLink(url) {
+        var link = document.createElement("link");
+        link.rel = "stylesheet";
+        link.type = "text/css";
+        link.href = url;
+        return link;
+    }
+
+    function appendToHead(el) {
+        var head = document.getElementsByTagName("head")[0];
+        head.appendChild(el);
+    }
+
+    function loader() {
+
+    }
+
+    loader.loadAsync = function (elements) {
+        if (elements && elements instanceof Array) {
+            if (elements.length) {
+                var el = undefined;
+                var element = undefined;
+                for (var i = 0; i < elements.length; i++) {
+                    el = elements[i];
+                    if (el.type == "link") {
+                        element = createLink(el);
+                    }
+                    else if (el.type == "script") {
+                        element = createScript(el);
+                    }
+                    appendToHead(element);
+                }
+            }
+        }
+    }
+    loader.loadUrl = function (element, onload) {
+        if (!element) return;
+        var el;
+        if (element.type == "link") {
+            el = createLink(element.src);
+        } else if (element.type == "script") {
+            el = createScript(element.src);
+        }
+        //是否加载完成
+        var isloaded = false;
+        el.onload = function () {
+            if (!isloaded) {
+                isloaded = true;
+                el.onload = null;
+                if (onload) {
+                    if (onload != null && typeof onload == "function") {
+                        onload.call(el);
+                    }
+                }
+            }
+        };
+
+        appendToHead(el);
+    }
+    loader.load = function (elements, onload) {
+        if (elements && elements instanceof Array) {
+            var el = undefined,
+                element = undefined
+            elArr = [];
+            if (elements.length > 0) {
+                for (var i = 0; i < elements.length; i++) {
+                    el = elements[i];
+                    if (el.type == "link") {
+                        element = createLink(el);
+                        elArr.push(element);
+                    } else if (el.type == "script") {
+                        element = createScript(el);
+                        elArr.push(element);
+                    }
+                }
+
+                for (var i = 0; i < elArr.length; i++) {
+                    el = elArr[i];
+                    el.onload = (function (i) {
+                        var that = this;
+                        var isloaded = false;
+                        if (!isloaded) {
+                            isloaded = true;
+                            that.onload = null;
+                            if (i + 1 < elArr.length) {
+                                appendToHead(el);
+                            } else {
+                                onload.call(el);
+                            }
+                        }
+                    })(i)
+                }
+            }
+        }
+    }
+
+    return loader;
+}()
 
 //类似.NET 拉姆达表达式
 this.Jsdk.Lambda = (function () {
