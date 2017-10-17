@@ -581,82 +581,83 @@ this.Jsdk.loader = function () {
 
     function loader() {
 
-    }
-
-    loader.loadAsync = function (elements) {
-        if (elements && elements instanceof Array) {
-            if (elements.length) {
-                var el = undefined;
-                var element = undefined;
-                for (var i = 0; i < elements.length; i++) {
-                    el = elements[i];
-                    if (el.type == "link") {
-                        element = createLink(el);
-                    }
-                    else if (el.type == "script") {
-                        element = createScript(el);
-                    }
-                    appendToHead(element);
-                }
-            }
-        }
-    }
-    loader.loadUrl = function (element, onload) {
-        if (!element) return;
-        var el;
-        if (element.type == "link") {
-            el = createLink(element.src);
-        } else if (element.type == "script") {
-            el = createScript(element.src);
-        }
-        //是否加载完成
-        var isloaded = false;
-        el.onload = function () {
-            if (!isloaded) {
-                isloaded = true;
-                el.onload = null;
-                if (onload) {
-                    if (onload != null && typeof onload == "function") {
-                        onload.call(el);
-                    }
-                }
-            }
-        };
-
-        appendToHead(el);
-    }
-    loader.load = function (elements, onload) {
-        if (elements && elements instanceof Array) {
-            var el = undefined,
-                element = undefined
-            elArr = [];
-            if (elements.length > 0) {
-                for (var i = 0; i < elements.length; i++) {
-                    el = elements[i];
-                    if (el.type == "link") {
-                        element = createLink(el);
-                        elArr.push(element);
-                    } else if (el.type == "script") {
-                        element = createScript(el);
-                        elArr.push(element);
-                    }
-                }
-
-                for (var i = 0; i < elArr.length; i++) {
-                    el = elArr[i];
-                    el.onload = (function (i) {
-                        var that = this;
-                        var isloaded = false;
-                        if (!isloaded) {
-                            isloaded = true;
-                            that.onload = null;
-                            if (i + 1 < elArr.length) {
-                                appendToHead(el);
-                            } else {
-                                onload.call(el);
-                            }
+        this.loadAsync = function (elements) {
+            if (elements && elements instanceof Array) {
+                if (elements.length) {
+                    var el = undefined;
+                    var element = undefined;
+                    for (var i = 0; i < elements.length; i++) {
+                        el = elements[i];
+                        if (el.type == "link") {
+                            element = createLink(el);
                         }
-                    })(i)
+                        else if (el.type == "script") {
+                            element = createScript(el);
+                        }
+                        appendToHead(element);
+                    }
+                }
+            }
+        }
+
+        this.loadUrl = function (element, onload) {
+            if (!element) return;
+            var el;
+            if (element.type == "link") {
+                el = createLink(element.src);
+            } else if (element.type == "script") {
+                el = createScript(element.src);
+            }
+            //是否加载完成
+            var isloaded = false;
+            el.onload = function () {
+                if (!isloaded) {
+                    isloaded = true;
+                    el.onload = null;
+                    if (onload) {
+                        if (onload != null && typeof onload == "function") {
+                            onload.call(el);
+                        }
+                    }
+                }
+            };
+
+            appendToHead(el);
+        }
+
+        this.load = function (elements, onload) {
+            if (elements && elements instanceof Array) {
+                var el = undefined,
+                    element = undefined
+                elArr = [];
+                if (elements.length > 0) {
+                    for (var i = 0; i < elements.length; i++) {
+                        el = elements[i];
+                        if (el.type == "link") {
+                            element = createLink(el);
+                            elArr.push(element);
+                        } else if (el.type == "script") {
+                            element = createScript(el);
+                            elArr.push(element);
+                        }
+                    }
+
+                    for (var i = 0; i < elArr.length; i++) {
+                        el = elArr[i];
+                        el.onload = (function (i) {
+                            var that = this;
+                            var isloaded = false;
+                            if (!isloaded) {
+                                isloaded = true;
+                                that.onload = null;
+                                if (i + 1 < elArr.length) {
+                                    appendToHead(el);
+                                } else {
+                                    onload.call(el);
+                                }
+                            }
+                        })(i)
+                    }
                 }
             }
         }
