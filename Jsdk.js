@@ -26,7 +26,7 @@
         methods = [
             "backCardNo", "jsonDate", "moneyRoundOff", "chinese", "chineseAmt", "trimAll",
             "isNullOrEmpty", "isNullOrWhiteSpace", "isEmail", "isZipCode", "isChinese", "isEnglish", "isExists",
-            "distinct", "format", "newGuid", "ajax", "getById", "createScript", "createLink",
+            "distinct", "format", "newGuid", "ajax", "getById", "createScript", "createLink", "getCookie",
             "basic", "request", "submit", "setCache", "getCache", "removeCache", "clearCache", "downloadCanvas"
         ];
     factory.$ = function () {
@@ -554,6 +554,12 @@
         return link;
     }
 
+    this.getCookie = function (name) {
+        var arr, reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)"), ret = null;
+        if (arr = document.cookie.match(reg))
+            ret = decodeURIComponent(arr[2]);
+        return ret;
+    }
 }))
 
 
