@@ -1,3 +1,16 @@
+/**
+ * @Author:                     David Chow
+ * @CreateDate:                 August 03st 2017.
+ * @Description:                常用js工具类,命名规范符合驼峰式大小写格式
+ * @Github:                     https://github.com/DavidChow521
+ * @License:                    You may use Jsdk-js under the terms of the MIT License (SeeLICENSE).
+ * -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+ *[Import Of]
+ *[Depend On]
+ * JQuery v1.11.0+
+ *[Sample Code]
+ */
+
 !(function (window, $, undefined) {
     'use strict';
 
@@ -14,6 +27,7 @@
 
     //函数功能实现
     var methods = function () {
+        var that = this;
 
         /**
      *  格式化银行卡
