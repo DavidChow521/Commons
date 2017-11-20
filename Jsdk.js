@@ -364,7 +364,7 @@
             //最新的HTML规范只有当页面中存在form时，submit(); 方法才会被激活
             document.body.appendChild(form);
             form.submit();
-            //document.body.removeChild(form);
+            document.body.removeChild(form);
         }
 
         /**设置缓存
@@ -498,7 +498,7 @@
         this.jsVal = (function () {
             var _jsVal = {};
             //格式:<input type="hidden" value="值" name="列" class="jsVal"/> 
-            $("input[type=hidden].jsVal").each(function (k, v) {
+            $(document).find("input[type=hidden].jsVal").each(function (k, v) {
                 _jsVal[$(v).attr("name")] = $.trim($(v).val());
             })
             return _jsVal;
