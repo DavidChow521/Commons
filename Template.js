@@ -22,11 +22,10 @@ viewModel.prototype = {
     jsVal: (function () {
         var _jsVal = {};
         //格式:<input type="hidden" name="列" value="值" class="jsVal"/>
-        $(document).find("input[type=hidden].jsVal").each(function (k, v) {
-            if ($(v).attr("name") != undefined) {
-                _jsVal[$(v).attr("name")] = $.trim($(v).val());
-            }
-        })
+        var jsVal = document.getElementsByClassName('jsVal');
+        for (i = 0; i < jsVal.length; i++) {
+            _jsVal[jsVal[i].name] = jsVal[i].value.trim();
+        }
         return _jsVal;
     })(),
     //获取普通元素值
