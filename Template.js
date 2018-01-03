@@ -56,4 +56,6 @@ var viewModel = function () {
     };
 }
 
-viewModel.prototype = {}
+viewModel.prototype = {
+    //这里写自定义函数
+}
