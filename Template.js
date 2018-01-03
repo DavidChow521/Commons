@@ -32,11 +32,24 @@ viewModel.prototype = {
     getVal: function () {
         var field = arguments[0],
             _getVal = {};
-        $(document).find("input:not([type=hidden],[type=file],[type=button]),select,textarea").each(function (k, v) {
-            if ($(v).attr("name") != undefined) {
-                _getVal[$(v).attr("name")] = $.trim($(v).val());
+        var getVal = document.getElementsByTagName('input');
+        for (var i = 0; i < getVal.length; i++) {
+            if (getVal[i].type !== "hidden" && getVal[i].type !== "file" && getVal[i].type !== "button" && getVal[i].name !== undefined) {
+                _getVal[getVal[i].name] = getVal[i].value.trim();
             }
-        })
+        }
+        var select = document.getElementsByTagName('select');
+        for (var i = 0; i < select.length; i++) {
+            if (select[i].name !== undefined) {
+                _getVal[select[i].name] = select[i].value.trim();
+            }
+        }
+        var textarea = document.getElementsByTagName('textarea');
+        for (var i = 0; i < textarea.length; i++) {
+            if (textarea[i].name !== undefined) {
+                _getVal[textarea[i].name] = textarea[i].value.trim();
+            }
+        }
         if (field != undefined && field != "" && field != null) {
             return _getVal[field] || null;
         }
