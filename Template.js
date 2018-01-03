@@ -1,25 +1,16 @@
 /**
- * Created by user on yyyy-MM-dd.
- * 命名规范遵从小驼峰式命名法（lower camel case）：第一个单字以小写字母开始
+ * Created by user on 2018-01-03.
+ * The naming specification follows the small hump nomenclature:the first single word begins with a lowercase letter.
+ * [Modified Log]
+ * 2018-01-03 20:35      user            创建模板
+ *
  */
 
 var viewModel = function () {
     //是否可以提交
     this.isPost = true;
-
-    //初始化(所有的事件注册全在这里)
-    this.init = function (callback) {
-        if (callback && typeof callback == "function") {
-            callback(this);
-        } else {
-            throw 'viewModel.init() 初始化失败！';
-        }
-    }
-}
-
-viewModel.prototype = {
     //初始化获取隐藏input标签值
-    jsVal: (function () {
+    this.jsVal = (function () {
         var _jsVal = {};
         //格式:<input type="hidden" name="列" value="值" class="jsVal"/>
         var jsVal = document.getElementsByClassName('jsVal');
@@ -27,9 +18,9 @@ viewModel.prototype = {
             _jsVal[jsVal[i].name] = jsVal[i].value.trim();
         }
         return _jsVal;
-    })(),
+    })();
     //获取普通元素值
-    getVal: function () {
+    this.getVal = function () {
         var field = arguments[0],
             _getVal = {};
         var getVal = document.getElementsByTagName('input');
@@ -54,5 +45,15 @@ viewModel.prototype = {
             return _getVal[field] || null;
         }
         return _getVal
-    },
+    };
+    //初始化(所有的事件注册全在这里)
+    this.init = function (callback) {
+        if (callback && typeof callback == "function") {
+            callback(this);
+        } else {
+            throw 'viewModel.init() 初始化失败！';
+        }
+    };
 }
+
+viewModel.prototype = {}
