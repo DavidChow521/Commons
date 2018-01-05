@@ -12,7 +12,7 @@ var viewModel = function () {
     //初始化获取隐藏input标签值
     this.jsVal = (function () {
         var _jsVal = {};
-        //格式:<input type="hidden" name="列" value="值" class="jsVal"/>
+        //格式:<input name="列" value="值" readonly="readonly" disabled="disabled" type="hidden" class="jsVal"/>
         var jsVal = document.getElementsByClassName('jsVal');
         for (i = 0; i < jsVal.length; i++) {
             _jsVal[jsVal[i].name] = jsVal[i].value.trim();
